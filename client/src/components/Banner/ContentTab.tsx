@@ -8,7 +8,17 @@ import ColorPicker from "./ColorPicker";
 
 // Font options
 const HEADING_FONTS = ["Poppins", "Roboto", "Montserrat", "Open Sans", "Playfair Display"];
-const SUBHEADING_FONTS = ["Inter", "Roboto", "Montserrat", "Open Sans", "Lato"];
+const SUBHEADING_FONTS = ["Poppins", "Inter", "Roboto", "Montserrat", "Open Sans"];
+const FOOTER_FONTS = ["Poppins", "Inter", "Roboto", "Montserrat", "Open Sans"];
+
+// Font weight options
+const FONT_WEIGHTS = [
+  { value: "normal", label: "Normal (400)" },
+  { value: "medium", label: "Medium (500)" },
+  { value: "semibold", label: "Semibold (600)" },
+  { value: "bold", label: "Bold (700)" },
+  { value: "extrabold", label: "Extra Bold (800)" }
+];
 
 interface ContentTabProps {
   settings: BannerSettings;
@@ -18,6 +28,7 @@ interface ContentTabProps {
 export default function ContentTab({ settings, onSettingsChange }: ContentTabProps) {
   const [showHeadingColorPicker, setShowHeadingColorPicker] = useState(false);
   const [showSubTextColorPicker, setShowSubTextColorPicker] = useState(false);
+  const [showFooterTextColorPicker, setShowFooterTextColorPicker] = useState(false);
   const [showCtaBackgroundColorPicker, setShowCtaBackgroundColorPicker] = useState(false);
   const [showCtaTextColorPicker, setShowCtaTextColorPicker] = useState(false);
 
@@ -105,6 +116,20 @@ export default function ContentTab({ settings, onSettingsChange }: ContentTabPro
             />
           </div>
         </div>
+        
+        <Select 
+          value={settings.headingWeight} 
+          onValueChange={(value) => onSettingsChange({ headingWeight: value as "normal" | "medium" | "semibold" | "bold" | "extrabold" })}
+        >
+          <SelectTrigger>
+            <SelectValue placeholder="Select font weight" />
+          </SelectTrigger>
+          <SelectContent>
+            {FONT_WEIGHTS.map(weight => (
+              <SelectItem key={weight.value} value={weight.value}>{weight.label}</SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
       </div>
       
       {/* Subheading Text */}
@@ -155,6 +180,87 @@ export default function ContentTab({ settings, onSettingsChange }: ContentTabPro
             style={{ backgroundColor: settings.subTextColor }}
             onClick={() => setShowSubTextColorPicker(true)}
           />
+        </div>
+        
+        <Select 
+          value={settings.subTextWeight} 
+          onValueChange={(value) => onSettingsChange({ subTextWeight: value as "normal" | "medium" | "semibold" | "bold" })}
+        >
+          <SelectTrigger>
+            <SelectValue placeholder="Select font weight" />
+          </SelectTrigger>
+          <SelectContent>
+            {FONT_WEIGHTS.filter(w => w.value !== "extrabold").map(weight => (
+              <SelectItem key={weight.value} value={weight.value}>{weight.label}</SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+      </div>
+      
+      {/* Footer Text */}
+      <div className="space-y-3">
+        <h3 className="font-medium text-neutral-900">Footer Text</h3>
+        <Input
+          type="text"
+          placeholder="Your footer text"
+          value={settings.footerText}
+          onChange={(e) => onSettingsChange({ footerText: e.target.value })}
+        />
+        
+        <div className="grid grid-cols-2 gap-3">
+          <Select 
+            value={settings.footerTextFont} 
+            onValueChange={(value) => onSettingsChange({ footerTextFont: value })}
+          >
+            <SelectTrigger>
+              <SelectValue placeholder="Select font" />
+            </SelectTrigger>
+            <SelectContent>
+              {FOOTER_FONTS.map(font => (
+                <SelectItem key={font} value={font}>{font}</SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+          
+          <div className="relative">
+            <Input
+              type="number"
+              placeholder="Font size"
+              value={settings.footerTextSize}
+              onChange={(e) => onSettingsChange({ footerTextSize: Number(e.target.value) })}
+            />
+            <span className="absolute right-3 top-1/2 transform -translate-y-1/2 text-neutral-400 text-xs">px</span>
+          </div>
+        </div>
+        
+        <div className="grid grid-cols-2 gap-3">
+          <div className="relative">
+            <Input
+              type="text"
+              placeholder="Color"
+              value={settings.footerTextColor}
+              onChange={(e) => onSettingsChange({ footerTextColor: e.target.value })}
+            />
+            <button 
+              className="absolute right-2 top-1/2 transform -translate-y-1/2 w-6 h-6 rounded-full border border-neutral-300"
+              style={{ backgroundColor: settings.footerTextColor }}
+              onClick={() => setShowFooterTextColorPicker(true)}
+            />
+          </div>
+          
+          <Select 
+            value={settings.footerTextWeight} 
+            onValueChange={(value) => onSettingsChange({ footerTextWeight: value as "normal" | "medium" | "semibold" | "bold" })}
+          >
+            <SelectTrigger>
+              <SelectValue placeholder="Select font weight" />
+            </SelectTrigger>
+            <SelectContent>
+              {FONT_WEIGHTS.filter(w => w.value !== "extrabold").map(weight => (
+                <SelectItem key={weight.value} value={weight.value}>{weight.label}</SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
         </div>
       </div>
       
@@ -283,6 +389,22 @@ export default function ContentTab({ settings, onSettingsChange }: ContentTabPro
                 setShowCtaTextColorPicker(false);
               }}
               onClose={() => setShowCtaTextColorPicker(false)}
+            />
+          </div>
+        </div>
+      )}
+      
+      {showFooterTextColorPicker && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white p-4 rounded-md w-80">
+            <h3 className="font-medium mb-3">Footer Text Color</h3>
+            <ColorPicker
+              color={settings.footerTextColor}
+              onChange={(color) => {
+                onSettingsChange({ footerTextColor: color });
+                setShowFooterTextColorPicker(false);
+              }}
+              onClose={() => setShowFooterTextColorPicker(false)}
             />
           </div>
         </div>

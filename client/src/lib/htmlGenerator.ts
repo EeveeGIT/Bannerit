@@ -1,5 +1,10 @@
 import { BannerSettings } from "./types";
-import { animationBackgrounds } from "./bannerUtils";
+import { animationBackgrounds, getFontWeight } from "./bannerUtils";
+
+// Helper function to convert font weight strings to numeric values for HTML
+function getFontWeightValue(weight: string): number {
+  return getFontWeight(weight);
+}
 
 // Generate the full HTML code for the banner
 export function generateHtmlCode(settings: BannerSettings): string {
@@ -33,8 +38,8 @@ export function generateHtmlCode(settings: BannerSettings): string {
     htmlCode += `    }\n`;
   }
   
-  // Add font imports
-  htmlCode += `    @import url('https://fonts.googleapis.com/css2?family=${settings.headingFont.replace(' ', '+')}:wght@700&family=${settings.subTextFont.replace(' ', '+')}&display=swap');\n`;
+  // Add font imports with various weights
+  htmlCode += `    @import url('https://fonts.googleapis.com/css2?family=${settings.headingFont.replace(' ', '+')}:wght@400;500;600;700;800&family=${settings.subTextFont.replace(' ', '+')}:wght@400;500;600;700&family=${settings.footerTextFont.replace(' ', '+')}:wght@400;500;600;700&display=swap');\n`;
   
   htmlCode += `  </style>\n`;
   
@@ -47,11 +52,19 @@ export function generateHtmlCode(settings: BannerSettings): string {
   // Add text content container
   htmlCode += `  <div style="position: absolute; inset: 0; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: ${settings.headingAlign};">\n`;
   
+  // Get font weight values
+  const headingWeightValue = getFontWeightValue(settings.headingWeight);
+  const subTextWeightValue = getFontWeightValue(settings.subTextWeight);
+  const footerTextWeightValue = getFontWeightValue(settings.footerTextWeight);
+  
   // Add heading text
-  htmlCode += `    <h2 style="font-family: '${settings.headingFont}', sans-serif; font-size: ${settings.headingSize}px; font-weight: 700; color: ${settings.headingColor}; margin: 0;">${settings.headingText}</h2>\n`;
+  htmlCode += `    <h2 style="font-family: '${settings.headingFont}', sans-serif; font-size: ${settings.headingSize}px; font-weight: ${headingWeightValue}; color: ${settings.headingColor}; margin: 0;">${settings.headingText}</h2>\n`;
   
   // Add subheading text
-  htmlCode += `    <p style="font-family: '${settings.subTextFont}', sans-serif; font-size: ${settings.subTextSize}px; color: ${settings.subTextColor}; margin: 4px 0 0 0;">${settings.subText}</p>\n`;
+  htmlCode += `    <p style="font-family: '${settings.subTextFont}', sans-serif; font-size: ${settings.subTextSize}px; font-weight: ${subTextWeightValue}; color: ${settings.subTextColor}; margin: 4px 0 0 0;">${settings.subText}</p>\n`;
+  
+  // Add footer text
+  htmlCode += `    <p style="font-family: '${settings.footerTextFont}', sans-serif; font-size: ${settings.footerTextSize}px; font-weight: ${footerTextWeightValue}; color: ${settings.footerTextColor}; margin: 4px 0 0 0;">${settings.footerText}</p>\n`;
   
   // Add CTA button if enabled
   if (settings.showCta) {
