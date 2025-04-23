@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { BannerSettings } from "@/lib/types";
 import { apiRequest } from "@/lib/queryClient";
 import { Input } from "@/components/ui/input";
@@ -47,7 +47,8 @@ export default function DesignTab({ settings, onSettingsChange }: DesignTabProps
   const [uploadingLogo, setUploadingLogo] = useState(false);
   const [uploadingBackground, setUploadingBackground] = useState(false);
   const [showColorPicker, setShowColorPicker] = useState(false);
-  const [brandColors, setBrandColors] = useState<string[]>(DEFAULT_BRAND_COLORS);
+  const [showAddBrandColorPicker, setShowAddBrandColorPicker] = useState(false);
+  const [newBrandColor, setNewBrandColor] = useState("#000000");
   const [selectedSize, setSelectedSize] = useState(() => {
     const matchingSize = BANNER_SIZES.find(
       size => size.width === settings.width && size.height === settings.height
@@ -57,6 +58,9 @@ export default function DesignTab({ settings, onSettingsChange }: DesignTabProps
   const [customWidth, setCustomWidth] = useState(settings.width);
   const [customHeight, setCustomHeight] = useState(settings.height);
   const { toast } = useToast();
+  
+  // Use DEFAULT_BRAND_COLORS if settings.brandColors is not available
+  const brandColorsToDisplay = settings.brandColors || DEFAULT_BRAND_COLORS;
 
   const handleSizeChange = (size: string) => {
     setSelectedSize(size);
@@ -369,6 +373,45 @@ export default function DesignTab({ settings, onSettingsChange }: DesignTabProps
       </div>
 
       {/* Color Picker Dialog */}
+      {/* Brand Colors */}
+      <div className="space-y-3">
+        <h3 className="font-medium text-neutral-900">Brand Colors</h3>
+        <div className="grid grid-cols-4 gap-2">
+          {settings.brandColors && settings.brandColors.map((color, index) => (
+            <div key={index} className="relative">
+              <button 
+                className="w-full h-10 rounded-md hover:ring-2 hover:ring-primary focus:outline-none focus:ring-2 focus:ring-primary"
+                style={{ backgroundColor: color }}
+                onClick={() => onSettingsChange({ 
+                  backgroundType: "color", 
+                  backgroundValue: color 
+                })}
+              />
+              <button 
+                className="absolute -top-2 -right-2 bg-white rounded-full p-1 shadow-sm hover:bg-neutral-100"
+                onClick={() => {
+                  const updatedColors = [...(settings.brandColors || [])];
+                  updatedColors.splice(index, 1);
+                  onSettingsChange({ brandColors: updatedColors });
+                }}
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-3 w-3 text-neutral-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              </button>
+            </div>
+          ))}
+          <button 
+            className="w-full h-10 flex items-center justify-center border border-dashed border-neutral-300 rounded-md hover:bg-neutral-50 text-neutral-500"
+            onClick={() => setShowAddBrandColorPicker(true)}
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+              <path fillRule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" clipRule="evenodd" />
+            </svg>
+          </button>
+        </div>
+      </div>
+
       {showColorPicker && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
           <div className="bg-white p-4 rounded-md w-80">
@@ -377,6 +420,24 @@ export default function DesignTab({ settings, onSettingsChange }: DesignTabProps
               color={settings.backgroundType === "color" ? settings.backgroundValue : "#3B82F6"}
               onChange={handleColorPickerChange}
               onClose={() => setShowColorPicker(false)}
+            />
+          </div>
+        </div>
+      )}
+      
+      {showAddBrandColorPicker && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white p-4 rounded-md w-80">
+            <h3 className="font-medium mb-3">Add Brand Color</h3>
+            <ColorPicker
+              color={newBrandColor}
+              onChange={(color) => {
+                // Add new color to brand colors
+                const updatedColors = [...(settings.brandColors || []), color];
+                onSettingsChange({ brandColors: updatedColors });
+                setShowAddBrandColorPicker(false);
+              }}
+              onClose={() => setShowAddBrandColorPicker(false)}
             />
           </div>
         </div>
