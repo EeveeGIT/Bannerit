@@ -15,7 +15,7 @@ export function generateHtmlCode(settings: BannerSettings): string {
   if (settings.backgroundType === "color") {
     htmlCode += ` background-color: ${settings.backgroundValue};`;
   } else if (settings.backgroundType === "image") {
-    htmlCode += ` background-image: url('${settings.backgroundValue}'); background-size: cover; background-position: center;`;
+    htmlCode += ` background-image: url('${settings.backgroundValue}'); background-size: ${settings.backgroundSize || 'cover'}; background-position: ${settings.backgroundPosition || 'center'};`;
   } else if (settings.backgroundType === "animation") {
     const animation = animationBackgrounds[settings.backgroundValue as keyof typeof animationBackgrounds];
     if (animation) {
@@ -63,8 +63,10 @@ export function generateHtmlCode(settings: BannerSettings): string {
   // Add subheading text
   htmlCode += `    <p style="font-family: '${settings.subTextFont}', sans-serif; font-size: ${settings.subTextSize}px; font-weight: ${subTextWeightValue}; color: ${settings.subTextColor}; margin: 4px 0 0 0;">${settings.subText}</p>\n`;
   
-  // Add footer text
-  htmlCode += `    <p style="font-family: '${settings.footerTextFont}', sans-serif; font-size: ${settings.footerTextSize}px; font-weight: ${footerTextWeightValue}; color: ${settings.footerTextColor}; margin: 4px 0 0 0;">${settings.footerText}</p>\n`;
+  // Add footer text (only if not in bottom position)
+  if (settings.footerPosition !== "bottom") {
+    htmlCode += `    <p style="font-family: '${settings.footerTextFont}', sans-serif; font-size: ${settings.footerTextSize}px; font-weight: ${footerTextWeightValue}; color: ${settings.footerTextColor}; margin: 4px 0 0 0;">${settings.footerText}</p>\n`;
+  }
   
   // Add CTA button if enabled
   if (settings.showCta) {
@@ -74,6 +76,13 @@ export function generateHtmlCode(settings: BannerSettings): string {
   // Close text container
   htmlCode += `  </div>\n`;
   
+  // Add footer text at bottom if position is bottom
+  if (settings.footerPosition === "bottom" && settings.footerText) {
+    htmlCode += `  <div style="position: absolute; bottom: 8px; left: 0; right: 0; text-align: center; z-index: 5;">
+    <p style="font-family: '${settings.footerTextFont}', sans-serif; font-size: ${settings.footerTextSize}px; font-weight: ${footerTextWeightValue}; color: ${settings.footerTextColor}; margin: 0;">${settings.footerText}</p>
+  </div>\n`;
+  }
+
   // Add clickable layer if enabled
   if (settings.isClickable && settings.clickUrl) {
     // Construct click URL with UTM parameters
