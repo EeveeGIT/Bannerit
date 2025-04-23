@@ -320,6 +320,24 @@ export default function ContentTab({ settings, onSettingsChange }: ContentTabPro
           </div>
         </div>
         
+        <div className="space-y-2">
+          <Label htmlFor="buttonBorderRadius">Button Corner Radius</Label>
+          <div className="flex items-center space-x-2">
+            <input
+              id="buttonBorderRadius"
+              type="range"
+              min="0"
+              max="20"
+              step="1"
+              value={settings.buttonBorderRadius || 4}
+              onChange={(e) => onSettingsChange({ buttonBorderRadius: Number(e.target.value) })}
+              className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer"
+              disabled={!settings.showCta}
+            />
+            <span className="text-sm text-neutral-500">{settings.buttonBorderRadius || 4}px</span>
+          </div>
+        </div>
+        
         <Input
           type="text"
           placeholder="URL"
@@ -327,6 +345,57 @@ export default function ContentTab({ settings, onSettingsChange }: ContentTabPro
           onChange={(e) => onSettingsChange({ ctaUrl: e.target.value })}
           disabled={!settings.showCta}
         />
+      </div>
+      
+      {/* Banner Click Settings */}
+      <div className="space-y-3">
+        <div className="flex items-center justify-between">
+          <h3 className="font-medium text-neutral-900">Banner Click Settings</h3>
+          <div className="flex items-center space-x-2">
+            <Checkbox 
+              id="isClickable" 
+              checked={settings.isClickable} 
+              onCheckedChange={(checked) => onSettingsChange({ isClickable: checked === true })}
+            />
+            <Label htmlFor="isClickable">Make entire banner clickable</Label>
+          </div>
+        </div>
+        
+        <Input
+          type="text"
+          placeholder="Destination URL"
+          value={settings.clickUrl}
+          onChange={(e) => onSettingsChange({ clickUrl: e.target.value })}
+          disabled={!settings.isClickable}
+        />
+        
+        <h4 className="text-sm font-medium text-neutral-700">UTM Parameters</h4>
+        
+        <div className="grid grid-cols-3 gap-3">
+          <Input
+            type="text"
+            placeholder="Source"
+            value={settings.utmSource}
+            onChange={(e) => onSettingsChange({ utmSource: e.target.value })}
+            disabled={!settings.isClickable}
+          />
+          
+          <Input
+            type="text"
+            placeholder="Medium"
+            value={settings.utmMedium}
+            onChange={(e) => onSettingsChange({ utmMedium: e.target.value })}
+            disabled={!settings.isClickable}
+          />
+          
+          <Input
+            type="text"
+            placeholder="Campaign"
+            value={settings.utmCampaign}
+            onChange={(e) => onSettingsChange({ utmCampaign: e.target.value })}
+            disabled={!settings.isClickable}
+          />
+        </div>
       </div>
 
       {/* Color Pickers */}

@@ -46,7 +46,7 @@ export function generateHtmlCode(settings: BannerSettings): string {
   // Add logo if present
   if (settings.logoPath) {
     const logoStyle = getLogoPositionStyleString(settings.logoPosition);
-    htmlCode += `  <img src="${settings.logoPath}" alt="Logo" style="position: absolute; ${logoStyle} width: 64px; height: auto; z-index: 10;"/>\n`;
+    htmlCode += `  <img src="${settings.logoPath}" alt="Logo" style="position: absolute; ${logoStyle} width: ${settings.logoSize || 64}px; height: auto; z-index: 10;"/>\n`;
   }
   
   // Add text content container
@@ -68,11 +68,28 @@ export function generateHtmlCode(settings: BannerSettings): string {
   
   // Add CTA button if enabled
   if (settings.showCta) {
-    htmlCode += `    <a href="${settings.ctaUrl}" style="display: inline-block; margin-top: 12px; padding: 6px 16px; background-color: ${settings.ctaBackgroundColor}; color: ${settings.ctaTextColor}; text-decoration: none; border-radius: 4px; font-family: '${settings.subTextFont}', sans-serif; font-size: 14px; font-weight: 500;">${settings.ctaText}</a>\n`;
+    htmlCode += `    <a href="${settings.ctaUrl}" style="display: inline-block; margin-top: 12px; padding: 6px 16px; background-color: ${settings.ctaBackgroundColor}; color: ${settings.ctaTextColor}; text-decoration: none; border-radius: ${settings.buttonBorderRadius || 4}px; font-family: '${settings.subTextFont}', sans-serif; font-size: 14px; font-weight: 500; z-index: 20;">${settings.ctaText}</a>\n`;
   }
   
   // Close text container
   htmlCode += `  </div>\n`;
+  
+  // Add clickable layer if enabled
+  if (settings.isClickable && settings.clickUrl) {
+    // Construct click URL with UTM parameters
+    let clickUrl = settings.clickUrl;
+    if (!clickUrl.startsWith('http')) {
+      clickUrl = `https://${clickUrl}`;
+    }
+    
+    // Add UTM parameters if they exist
+    const urlObj = new URL(clickUrl);
+    if (settings.utmSource) urlObj.searchParams.append('utm_source', settings.utmSource);
+    if (settings.utmMedium) urlObj.searchParams.append('utm_medium', settings.utmMedium);
+    if (settings.utmCampaign) urlObj.searchParams.append('utm_campaign', settings.utmCampaign);
+    
+    htmlCode += `  <a href="${urlObj.toString()}" target="_blank" rel="noopener noreferrer" style="position: absolute; inset: 0; z-index: 10; cursor: pointer; text-decoration: none;"></a>\n`;
+  }
   
   // Close main div
   htmlCode += `</div>`;
@@ -85,10 +102,14 @@ function getLogoPositionStyleString(position: string): string {
   switch (position) {
     case "top-left":
       return "top: 8px; left: 8px;";
+    case "top-center":
+      return "top: 8px; left: 50%; transform: translateX(-50%);";
     case "top-right":
       return "top: 8px; right: 8px;";
     case "bottom-left":
       return "bottom: 8px; left: 8px;";
+    case "bottom-center":
+      return "bottom: 8px; left: 50%; transform: translateX(-50%);";
     case "bottom-right":
       return "bottom: 8px; right: 8px;";
     case "center":
