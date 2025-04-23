@@ -15,6 +15,7 @@ const ANIMATIONS = [
   { id: "4", gradient: "linear-gradient(-45deg, #F59E0B, #FBBF24, #F59E0B, #D97706)" },
   { id: "5", gradient: "linear-gradient(-45deg, #111827, #1F2937, #374151, #4B5563)" },
   { id: "6", gradient: "linear-gradient(-45deg, #6366F1, #4F46E5, #4338CA, #3730A3)" },
+  { id: "7", gradient: "linear-gradient(-45deg, #ED2D26, #f4817d, #ED2D26)" },
 ];
 
 // Logo design elements
@@ -356,19 +357,37 @@ export default function DesignTab({ settings, onSettingsChange }: DesignTabProps
           
           <Select 
             value={settings.logoPosition} 
-            onValueChange={(value) => onSettingsChange({ logoPosition: value as "top-left" | "top-right" | "bottom-left" | "bottom-right" | "center" })}
+            onValueChange={(value) => onSettingsChange({ logoPosition: value as "top-left" | "top-right" | "top-center" | "bottom-left" | "bottom-right" | "bottom-center" | "center" })}
           >
             <SelectTrigger>
               <SelectValue placeholder="Select logo position" />
             </SelectTrigger>
             <SelectContent>
               <SelectItem value="top-left">Top Left</SelectItem>
+              <SelectItem value="top-center">Top Center</SelectItem>
               <SelectItem value="top-right">Top Right</SelectItem>
-              <SelectItem value="bottom-left">Bottom Left</SelectItem>
-              <SelectItem value="bottom-right">Bottom Right</SelectItem>
               <SelectItem value="center">Center</SelectItem>
+              <SelectItem value="bottom-left">Bottom Left</SelectItem>
+              <SelectItem value="bottom-center">Bottom Center</SelectItem>
+              <SelectItem value="bottom-right">Bottom Right</SelectItem>
             </SelectContent>
           </Select>
+        </div>
+
+        {/* Logo Size */}
+        <div className="space-y-2">
+          <div className="flex justify-between items-center">
+            <span className="text-sm text-neutral-500">Logo Size: {settings.logoSize || 64}px</span>
+          </div>
+          <input
+            type="range"
+            min="32"
+            max="128"
+            step="4"
+            value={settings.logoSize || 64}
+            onChange={(e) => onSettingsChange({ logoSize: Number(e.target.value) })}
+            className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer"
+          />
         </div>
         
         {/* Logo Elements */}

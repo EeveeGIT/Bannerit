@@ -9,7 +9,20 @@ interface BannerPreviewProps {
 const BannerPreview = forwardRef<HTMLDivElement, BannerPreviewProps>((props, ref) => {
   const { settings } = props;
   const bannerStyle = getBannerStyle(settings);
-  const logoStyle = getLogoPositionStyle(settings.logoPosition);
+  const logoStyle = getLogoPositionStyle(settings.logoPosition, settings.logoSize || 64);
+  
+  // Construct click URL with UTM parameters if they exist
+  const constructClickUrl = () => {
+    if (!settings.clickUrl) return '#';
+    
+    const url = new URL(settings.clickUrl.startsWith('http') ? settings.clickUrl : `https://${settings.clickUrl}`);
+    
+    if (settings.utmSource) url.searchParams.append('utm_source', settings.utmSource);
+    if (settings.utmMedium) url.searchParams.append('utm_medium', settings.utmMedium);
+    if (settings.utmCampaign) url.searchParams.append('utm_campaign', settings.utmCampaign);
+    
+    return url.toString();
+  };
   
   return (
     <div className="lg:w-1/2 h-[250px] lg:h-full p-4 bg-neutral-200 flex items-center justify-center overflow-auto">
@@ -76,10 +89,11 @@ const BannerPreview = forwardRef<HTMLDivElement, BannerPreviewProps>((props, ref
             {settings.showCta && (
               <a 
                 href={settings.ctaUrl}
-                className="mt-3 px-4 py-1 rounded text-sm font-medium"
+                className="mt-3 px-4 py-1 rounded text-sm font-medium z-20"
                 style={{
                   backgroundColor: settings.ctaBackgroundColor,
-                  color: settings.ctaTextColor
+                  color: settings.ctaTextColor,
+                  borderRadius: `${settings.buttonBorderRadius || 4}px`
                 }}
                 onClick={(e) => e.preventDefault()}
               >
@@ -87,6 +101,19 @@ const BannerPreview = forwardRef<HTMLDivElement, BannerPreviewProps>((props, ref
               </a>
             )}
           </div>
+          
+          {/* Clickable Layer */}
+          {settings.isClickable && (
+            <a 
+              href={constructClickUrl()}
+              className="absolute inset-0 z-10 cursor-pointer"
+              target="_blank"
+              rel="noopener noreferrer"
+              onClick={(e) => e.preventDefault()}
+            >
+              <span className="sr-only">Click banner</span>
+            </a>
+          )}
         </div>
         
         {/* Size Indicator */}

@@ -25,6 +25,13 @@ export interface BannerSettings {
   ctaTextColor: string;
   ctaUrl: string;
   logoPath?: string;
-  logoPosition: "top-left" | "top-right" | "bottom-left" | "bottom-right" | "center";
+  logoPosition: "top-left" | "top-right" | "top-center" | "bottom-left" | "bottom-right" | "bottom-center" | "center";
+  logoSize: number; // Size in pixels
   brandColors: string[]; // Array of custom brand colors
+  isClickable: boolean;
+  clickUrl: string;
+  utmSource: string;
+  utmMedium: string;
+  utmCampaign: string;
+  buttonBorderRadius: number; // For CTA button rounded corners
 }

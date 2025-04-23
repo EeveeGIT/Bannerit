@@ -34,6 +34,10 @@ export const animationBackgrounds = {
   "6": {
     gradient: "linear-gradient(-45deg, #6366F1, #4F46E5, #4338CA, #3730A3)",
     duration: "12s"
+  },
+  "7": {
+    gradient: "linear-gradient(-45deg, #ED2D26, #f4817d, #ED2D26)",
+    duration: "10s"
   }
 };
 
@@ -73,9 +77,9 @@ export const getBannerStyle = (settings: BannerSettings): React.CSSProperties =>
 };
 
 // Get styles for logo positioning
-export const getLogoPositionStyle = (position: string): React.CSSProperties => {
+export const getLogoPositionStyle = (position: string, size: number = 64): React.CSSProperties => {
   const style: React.CSSProperties = {
-    width: "64px",
+    width: `${size}px`,
     height: "auto"
   };
   
@@ -84,6 +88,11 @@ export const getLogoPositionStyle = (position: string): React.CSSProperties => {
       style.top = "8px";
       style.left = "8px";
       break;
+    case "top-center":
+      style.top = "8px";
+      style.left = "50%";
+      style.transform = "translateX(-50%)";
+      break;
     case "top-right":
       style.top = "8px";
       style.right = "8px";
@@ -91,6 +100,11 @@ export const getLogoPositionStyle = (position: string): React.CSSProperties => {
     case "bottom-left":
       style.bottom = "8px";
       style.left = "8px";
+      break;
+    case "bottom-center":
+      style.bottom = "8px";
+      style.left = "50%";
+      style.transform = "translateX(-50%)";
       break;
     case "bottom-right":
       style.bottom = "8px";
