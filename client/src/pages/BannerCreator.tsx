@@ -23,17 +23,25 @@ export default function BannerCreator() {
     headingSize: 24,
     headingColor: "#FFFFFF",
     headingAlign: "center",
+    headingWeight: "bold",
     subText: "Discover our amazing products",
-    subTextFont: "Inter",
+    subTextFont: "Poppins",
     subTextSize: 14,
     subTextColor: "#FFFFFF",
+    subTextWeight: "medium",
+    footerText: "Terms and conditions apply",
+    footerTextFont: "Poppins",
+    footerTextSize: 10,
+    footerTextColor: "#CCCCCC",
+    footerTextWeight: "normal",
     showCta: false,
     ctaText: "Learn More",
     ctaBackgroundColor: "#3B82F6",
     ctaTextColor: "#FFFFFF",
     ctaUrl: "https://example.com",
     logoPath: "",
-    logoPosition: "top-left"
+    logoPosition: "top-left",
+    brandColors: ["#3B82F6", "#10B981", "#6366F1", "#F59E0B", "#EF4444"]
   });
 
   const handleSettingsChange = (newSettings: Partial<BannerSettings>) => {

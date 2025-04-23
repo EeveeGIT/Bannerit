@@ -1,6 +1,6 @@
 import { forwardRef } from "react";
 import { BannerSettings } from "@/lib/types";
-import { getBannerStyle, getLogoPositionStyle } from "@/lib/bannerUtils";
+import { getBannerStyle, getLogoPositionStyle, getFontWeight } from "@/lib/bannerUtils";
 
 interface BannerPreviewProps {
   settings: BannerSettings;
@@ -38,12 +38,13 @@ const BannerPreview = forwardRef<HTMLDivElement, BannerPreviewProps>((props, ref
           {/* Banner Text */}
           <div className="absolute inset-0 flex flex-col justify-center items-center text-white">
             <h2 
-              className="font-heading font-bold text-center"
+              className="font-heading text-center"
               style={{
                 fontFamily: settings.headingFont,
                 fontSize: `${settings.headingSize}px`,
                 color: settings.headingColor,
-                textAlign: settings.headingAlign
+                textAlign: settings.headingAlign,
+                fontWeight: getFontWeight(settings.headingWeight)
               }}
             >
               {settings.headingText}
@@ -53,10 +54,23 @@ const BannerPreview = forwardRef<HTMLDivElement, BannerPreviewProps>((props, ref
               style={{
                 fontFamily: settings.subTextFont,
                 fontSize: `${settings.subTextSize}px`,
-                color: settings.subTextColor
+                color: settings.subTextColor,
+                fontWeight: getFontWeight(settings.subTextWeight)
               }}
             >
               {settings.subText}
+            </p>
+            
+            <p 
+              className="mt-1"
+              style={{
+                fontFamily: settings.footerTextFont,
+                fontSize: `${settings.footerTextSize}px`,
+                color: settings.footerTextColor,
+                fontWeight: getFontWeight(settings.footerTextWeight)
+              }}
+            >
+              {settings.footerText}
             </p>
             
             {settings.showCta && (

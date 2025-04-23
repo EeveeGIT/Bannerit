@@ -8,10 +8,17 @@ export interface BannerSettings {
   headingSize: number;
   headingColor: string;
   headingAlign: "left" | "center" | "right";
+  headingWeight: "normal" | "medium" | "semibold" | "bold" | "extrabold";
   subText: string;
   subTextFont: string;
   subTextSize: number;
   subTextColor: string;
+  subTextWeight: "normal" | "medium" | "semibold" | "bold";
+  footerText: string;
+  footerTextFont: string;
+  footerTextSize: number;
+  footerTextColor: string;
+  footerTextWeight: "normal" | "medium" | "semibold" | "bold";
   showCta: boolean;
   ctaText: string;
   ctaBackgroundColor: string;
@@ -19,4 +26,5 @@ export interface BannerSettings {
   ctaUrl: string;
   logoPath?: string;
   logoPosition: "top-left" | "top-right" | "bottom-left" | "bottom-right" | "center";
+  brandColors: string[]; // Array of custom brand colors
 }

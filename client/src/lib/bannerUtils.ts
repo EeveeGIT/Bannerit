@@ -37,6 +37,18 @@ export const animationBackgrounds = {
   }
 };
 
+// Helper function to convert font weight strings to numeric values
+export const getFontWeight = (weight: string): number => {
+  switch (weight) {
+    case "normal": return 400;
+    case "medium": return 500;
+    case "semibold": return 600;
+    case "bold": return 700;
+    case "extrabold": return 800;
+    default: return 400;
+  }
+};
+
 // Get CSS style for the banner based on settings
 export const getBannerStyle = (settings: BannerSettings): React.CSSProperties => {
   const style: React.CSSProperties = {};
