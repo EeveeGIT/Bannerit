@@ -30,6 +30,7 @@ export interface BannerSettings {
   logoPath?: string;
   logoPosition: "top-left" | "top-right" | "top-center" | "bottom-left" | "bottom-right" | "bottom-center" | "center";
   logoSize: number; // Size in pixels
+  logoMargin: number; // Margin in pixels
   brandColors: string[]; // Array of custom brand colors
   isClickable: boolean;
   clickUrl: string;

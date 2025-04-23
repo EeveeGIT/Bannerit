@@ -19,7 +19,7 @@ export function generateHtmlCode(settings: BannerSettings): string {
   } else if (settings.backgroundType === "animation") {
     const animation = animationBackgrounds[settings.backgroundValue as keyof typeof animationBackgrounds];
     if (animation) {
-      htmlCode += ` background: ${animation.gradient}; background-size: 400% 400%; animation: gradient ${animation.duration} ease infinite;`;
+      htmlCode += ` background-image: ${animation.gradient}; background-size: 400% 400%; animation: gradient ${animation.duration} ease infinite;`;
     }
   }
   

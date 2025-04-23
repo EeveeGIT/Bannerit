@@ -14,34 +14,44 @@ export default function BannerCreator() {
   const previewRef = useRef<HTMLDivElement>(null);
   const [activeTab, setActiveTab] = useState<"design" | "content" | "code">("design");
   const [bannerSettings, setBannerSettings] = useState<BannerSettings>({
-    width: 728,
-    height: 90,
+    width: 300,
+    height: 600,
     backgroundType: "animation",
-    backgroundValue: "2", // animation-2
+    backgroundValue: "7", // Red gradient animation as default
+    backgroundSize: "cover",
+    backgroundPosition: "center",
     headingText: "Your Brand Message",
     headingFont: "Poppins",
     headingSize: 24,
-    headingColor: "#FFFFFF",
+    headingColor: "#fff7ea", // Cream color as requested
     headingAlign: "center",
     headingWeight: "bold",
     subText: "Discover our amazing products",
     subTextFont: "Poppins",
     subTextSize: 14,
-    subTextColor: "#FFFFFF",
+    subTextColor: "#fff7ea", // Cream color as requested
     subTextWeight: "medium",
     footerText: "Terms and conditions apply",
     footerTextFont: "Poppins",
     footerTextSize: 10,
-    footerTextColor: "#CCCCCC",
+    footerTextColor: "#fff7ea", // Cream color as requested
     footerTextWeight: "normal",
+    footerPosition: "default",
     showCta: false,
     ctaText: "Learn More",
-    ctaBackgroundColor: "#3B82F6",
-    ctaTextColor: "#FFFFFF",
+    ctaBackgroundColor: "#fff7ea", // Cream color as requested for button
+    ctaTextColor: "#202020", // Dark text for CTA button as requested
     ctaUrl: "https://example.com",
     logoPath: "",
     logoPosition: "top-left",
-    brandColors: ["#3B82F6", "#10B981", "#6366F1", "#F59E0B", "#EF4444"]
+    logoSize: 64,
+    brandColors: ["#ED2D26", "#f4817d", "#fff7ea", "#202020"],
+    isClickable: false,
+    clickUrl: "https://example.com",
+    utmSource: "",
+    utmMedium: "",
+    utmCampaign: "",
+    buttonBorderRadius: 4
   });
 
   const handleSettingsChange = (newSettings: Partial<BannerSettings>) => {

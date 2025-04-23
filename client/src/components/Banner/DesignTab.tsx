@@ -22,11 +22,12 @@ const ANIMATIONS = [
 
 // Predefined banner sizes
 const BANNER_SIZES = [
-  { id: "728x90", label: "Leaderboard - 728 × 90", width: 728, height: 90 },
-  { id: "300x250", label: "Medium Rectangle - 300 × 250", width: 300, height: 250 },
-  { id: "300x600", label: "Half Page - 300 × 600", width: 300, height: 600 },
-  { id: "320x50", label: "Mobile Banner - 320 × 50", width: 320, height: 50 },
-  { id: "160x600", label: "Skyscraper - 160 × 600", width: 160, height: 600 },
+  { id: "300x600", label: "300 × 600", width: 300, height: 600 },
+  { id: "300x300", label: "300 × 300", width: 300, height: 300 },
+  { id: "320x320", label: "320 × 320", width: 320, height: 320 },
+  { id: "468x400", label: "468 × 400", width: 468, height: 400 },
+  { id: "980x400", label: "980 × 400", width: 980, height: 400 },
+  { id: "300x431", label: "300 × 431", width: 300, height: 431 },
   { id: "custom", label: "Custom Size", width: 0, height: 0 },
 ];
 
@@ -300,7 +301,7 @@ export default function DesignTab({ settings, onSettingsChange }: DesignTabProps
                 key={animation.id}
                 className={`bg-animation-${animation.id} h-16 rounded-md overflow-hidden hover:ring-2 hover:ring-primary focus:outline-none focus:ring-2 focus:ring-primary ${settings.backgroundValue === animation.id ? 'ring-2 ring-primary' : ''}`}
                 onClick={() => handleSelectAnimation(animation.id)}
-                style={{ background: animation.gradient, backgroundSize: '400% 400%' }}
+                style={{ backgroundImage: animation.gradient, backgroundSize: '400% 400%' }}
               />
             ))}
           </div>

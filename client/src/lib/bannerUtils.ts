@@ -67,7 +67,7 @@ export const getBannerStyle = (settings: BannerSettings): React.CSSProperties =>
   } else if (settings.backgroundType === "animation") {
     const animation = animationBackgrounds[settings.backgroundValue as keyof typeof animationBackgrounds];
     if (animation) {
-      style.background = animation.gradient;
+      style.backgroundImage = animation.gradient;
       style.backgroundSize = "400% 400%";
       style.animation = `gradient ${animation.duration} ease infinite`;
     }
