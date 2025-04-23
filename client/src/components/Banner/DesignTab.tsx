@@ -197,9 +197,22 @@ export default function DesignTab({ settings, onSettingsChange }: DesignTabProps
   };
 
   const handleColorPickerChange = (color: string) => {
-    if (!brandColors.includes(color)) {
-      setBrandColors([...brandColors.slice(0, 3), color]);
+    // Add color to brand colors if not already included
+    if (settings.brandColors && !settings.brandColors.includes(color)) {
+      const updatedColors = [...settings.brandColors];
+      if (updatedColors.length >= 4) {
+        // Replace the last color
+        updatedColors[updatedColors.length - 1] = color;
+      } else {
+        // Add new color
+        updatedColors.push(color);
+      }
+      onSettingsChange({ brandColors: updatedColors });
+    } else if (!settings.brandColors) {
+      // Initialize brand colors if they don't exist
+      onSettingsChange({ brandColors: [...DEFAULT_BRAND_COLORS.slice(0, 3), color] });
     }
+    
     setShowColorPicker(false);
     onSettingsChange({ 
       backgroundType: "color", 
@@ -303,7 +316,7 @@ export default function DesignTab({ settings, onSettingsChange }: DesignTabProps
         {/* Color Selector */}
         {settings.backgroundType === "color" && (
           <div className="grid grid-cols-5 gap-2">
-            {brandColors.map((color, index) => (
+            {brandColorsToDisplay?.map((color: string, index: number) => (
               <button 
                 key={index}
                 className={`w-full h-10 rounded-md hover:ring-2 hover:ring-primary focus:outline-none focus:ring-2 focus:ring-primary ${settings.backgroundValue === color ? 'ring-2 ring-primary' : ''}`}
@@ -343,7 +356,7 @@ export default function DesignTab({ settings, onSettingsChange }: DesignTabProps
           
           <Select 
             value={settings.logoPosition} 
-            onValueChange={(value) => onSettingsChange({ logoPosition: value })}
+            onValueChange={(value) => onSettingsChange({ logoPosition: value as "top-left" | "top-right" | "bottom-left" | "bottom-right" | "center" })}
           >
             <SelectTrigger>
               <SelectValue placeholder="Select logo position" />
