@@ -74,17 +74,19 @@ const BannerPreview = forwardRef<HTMLDivElement, BannerPreviewProps>((props, ref
               {settings.subText}
             </p>
             
-            <p 
-              className="mt-1"
-              style={{
-                fontFamily: settings.footerTextFont,
-                fontSize: `${settings.footerTextSize}px`,
-                color: settings.footerTextColor,
-                fontWeight: getFontWeight(settings.footerTextWeight)
-              }}
-            >
-              {settings.footerText}
-            </p>
+            {settings.footerPosition !== "bottom" && (
+              <p 
+                className="mt-1"
+                style={{
+                  fontFamily: settings.footerTextFont,
+                  fontSize: `${settings.footerTextSize}px`,
+                  color: settings.footerTextColor,
+                  fontWeight: getFontWeight(settings.footerTextWeight)
+                }}
+              >
+                {settings.footerText}
+              </p>
+            )}
             
             {settings.showCta && (
               <a 
@@ -101,6 +103,22 @@ const BannerPreview = forwardRef<HTMLDivElement, BannerPreviewProps>((props, ref
               </a>
             )}
           </div>
+          
+          {/* Footer Text at Bottom */}
+          {settings.footerPosition === "bottom" && (
+            <div className="absolute bottom-2 left-0 right-0 text-center">
+              <p 
+                style={{
+                  fontFamily: settings.footerTextFont,
+                  fontSize: `${settings.footerTextSize}px`,
+                  color: settings.footerTextColor,
+                  fontWeight: getFontWeight(settings.footerTextWeight)
+                }}
+              >
+                {settings.footerText}
+              </p>
+            </div>
+          )}
           
           {/* Clickable Layer */}
           {settings.isClickable && (

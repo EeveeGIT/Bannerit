@@ -18,13 +18,7 @@ const ANIMATIONS = [
   { id: "7", gradient: "linear-gradient(-45deg, #ED2D26, #f4817d, #ED2D26)" },
 ];
 
-// Logo design elements
-const LOGO_ELEMENTS = [
-  { id: "1", path: "https://cdn.pixabay.com/photo/2017/03/16/21/18/logo-2150297_1280.png" },
-  { id: "2", path: "https://cdn.pixabay.com/photo/2017/01/31/13/14/animal-2023924_1280.png" },
-  { id: "3", path: "https://cdn.pixabay.com/photo/2017/01/13/01/22/rocket-1976107_1280.png" },
-  { id: "4", path: "https://cdn.pixabay.com/photo/2016/11/07/13/04/yoga-1805784_1280.png" },
-];
+// No predefined logo elements
 
 // Predefined banner sizes
 const BANNER_SIZES = [
@@ -186,9 +180,7 @@ export default function DesignTab({ settings, onSettingsChange }: DesignTabProps
     });
   };
 
-  const handleSelectLogoElement = (logoPath: string) => {
-    onSettingsChange({ logoPath });
-  };
+  // No longer needed as we've removed predefined logo elements
 
   const handleSelectColor = (color: string) => {
     onSettingsChange({ 
@@ -314,6 +306,56 @@ export default function DesignTab({ settings, onSettingsChange }: DesignTabProps
           </div>
         )}
         
+        {/* Background Image Settings */}
+        {settings.backgroundType === "image" && (
+          <div className="space-y-3">
+            {settings.backgroundValue && settings.backgroundValue.match(/\.(jpg|jpeg|png|gif)$/i) && (
+              <div className="p-4 border border-neutral-200 rounded-md">
+                <div className="text-sm text-neutral-500 mb-2">Current Background:</div>
+                <div className="h-16 bg-cover bg-center rounded" style={{ backgroundImage: `url(${settings.backgroundValue})` }}></div>
+              </div>
+            )}
+            
+            <div className="grid grid-cols-2 gap-3">
+              <Select 
+                value={settings.backgroundSize || "cover"} 
+                onValueChange={(value) => onSettingsChange({ backgroundSize: value as "cover" | "contain" | "auto" })}
+              >
+                <SelectTrigger>
+                  <SelectValue placeholder="Background Size" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="cover">Cover</SelectItem>
+                  <SelectItem value="contain">Contain</SelectItem>
+                  <SelectItem value="auto">Auto</SelectItem>
+                </SelectContent>
+              </Select>
+              
+              <Select 
+                value={settings.backgroundPosition || "center"} 
+                onValueChange={(value) => onSettingsChange({ 
+                  backgroundPosition: value as "center" | "top" | "bottom" | "left" | "right" | "top-left" | "top-right" | "bottom-left" | "bottom-right" 
+                })}
+              >
+                <SelectTrigger>
+                  <SelectValue placeholder="Background Position" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="center">Center</SelectItem>
+                  <SelectItem value="top">Top</SelectItem>
+                  <SelectItem value="bottom">Bottom</SelectItem>
+                  <SelectItem value="left">Left</SelectItem>
+                  <SelectItem value="right">Right</SelectItem>
+                  <SelectItem value="top-left">Top Left</SelectItem>
+                  <SelectItem value="top-right">Top Right</SelectItem>
+                  <SelectItem value="bottom-left">Bottom Left</SelectItem>
+                  <SelectItem value="bottom-right">Bottom Right</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+          </div>
+        )}
+        
         {/* Color Selector */}
         {settings.backgroundType === "color" && (
           <div className="grid grid-cols-5 gap-2">
@@ -390,18 +432,13 @@ export default function DesignTab({ settings, onSettingsChange }: DesignTabProps
           />
         </div>
         
-        {/* Logo Elements */}
-        <div className="grid grid-cols-4 gap-2">
-          {LOGO_ELEMENTS.map(logo => (
-            <button 
-              key={logo.id}
-              className={`p-2 border ${settings.logoPath === logo.path ? 'border-primary' : 'border-neutral-200'} rounded-md hover:border-primary focus:outline-none focus:border-primary`}
-              onClick={() => handleSelectLogoElement(logo.path)}
-            >
-              <img src={logo.path} alt="Logo element" className="w-full h-auto" />
-            </button>
-          ))}
-        </div>
+        {/* Logo Preview */}
+        {settings.logoPath && (
+          <div className="p-4 border border-neutral-200 rounded-md mt-2">
+            <div className="text-sm text-neutral-500 mb-2">Uploaded Logo:</div>
+            <img src={settings.logoPath} alt="Uploaded logo" className="h-16 w-auto mx-auto" />
+          </div>
+        )}
       </div>
 
       {/* Color Picker Dialog */}

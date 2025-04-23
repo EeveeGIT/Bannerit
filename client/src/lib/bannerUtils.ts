@@ -62,8 +62,8 @@ export const getBannerStyle = (settings: BannerSettings): React.CSSProperties =>
     style.backgroundColor = settings.backgroundValue;
   } else if (settings.backgroundType === "image") {
     style.backgroundImage = `url(${settings.backgroundValue})`;
-    style.backgroundSize = "cover";
-    style.backgroundPosition = "center";
+    style.backgroundSize = settings.backgroundSize || "cover";
+    style.backgroundPosition = settings.backgroundPosition || "center";
   } else if (settings.backgroundType === "animation") {
     const animation = animationBackgrounds[settings.backgroundValue as keyof typeof animationBackgrounds];
     if (animation) {

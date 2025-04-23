@@ -3,6 +3,8 @@ export interface BannerSettings {
   height: number;
   backgroundType: "color" | "animation" | "image";
   backgroundValue: string; // hex color, animation id, or image url
+  backgroundSize: "cover" | "contain" | "auto"; // Background image size
+  backgroundPosition: "center" | "top" | "bottom" | "left" | "right" | "top-left" | "top-right" | "bottom-left" | "bottom-right"; // Background image position
   headingText: string;
   headingFont: string;
   headingSize: number;
@@ -19,6 +21,7 @@ export interface BannerSettings {
   footerTextSize: number;
   footerTextColor: string;
   footerTextWeight: "normal" | "medium" | "semibold" | "bold";
+  footerPosition: "default" | "bottom"; // Position of footer text
   showCta: boolean;
   ctaText: string;
   ctaBackgroundColor: string;

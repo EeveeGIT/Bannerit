@@ -262,6 +262,22 @@ export default function ContentTab({ settings, onSettingsChange }: ContentTabPro
             </SelectContent>
           </Select>
         </div>
+        
+        <div className="flex items-center space-x-2">
+          <Label htmlFor="footerPosition">Footer Position:</Label>
+          <Select 
+            value={settings.footerPosition || "default"} 
+            onValueChange={(value) => onSettingsChange({ footerPosition: value as "default" | "bottom" })}
+          >
+            <SelectTrigger>
+              <SelectValue placeholder="Select position" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="default">Default (Centered)</SelectItem>
+              <SelectItem value="bottom">Bottom of Banner</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
       </div>
       
       {/* Call to Action Button */}
@@ -368,34 +384,6 @@ export default function ContentTab({ settings, onSettingsChange }: ContentTabPro
           onChange={(e) => onSettingsChange({ clickUrl: e.target.value })}
           disabled={!settings.isClickable}
         />
-        
-        <h4 className="text-sm font-medium text-neutral-700">UTM Parameters</h4>
-        
-        <div className="grid grid-cols-3 gap-3">
-          <Input
-            type="text"
-            placeholder="Source"
-            value={settings.utmSource}
-            onChange={(e) => onSettingsChange({ utmSource: e.target.value })}
-            disabled={!settings.isClickable}
-          />
-          
-          <Input
-            type="text"
-            placeholder="Medium"
-            value={settings.utmMedium}
-            onChange={(e) => onSettingsChange({ utmMedium: e.target.value })}
-            disabled={!settings.isClickable}
-          />
-          
-          <Input
-            type="text"
-            placeholder="Campaign"
-            value={settings.utmCampaign}
-            onChange={(e) => onSettingsChange({ utmCampaign: e.target.value })}
-            disabled={!settings.isClickable}
-          />
-        </div>
       </div>
 
       {/* Color Pickers */}
