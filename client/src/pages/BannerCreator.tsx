@@ -45,6 +45,7 @@ export default function BannerCreator() {
     logoPath: "",
     logoPosition: "top-left",
     logoSize: 64,
+    logoMargin: 8,
     brandColors: ["#ED2D26", "#f4817d", "#fff7ea", "#202020"],
     isClickable: false,
     clickUrl: "https://example.com",
