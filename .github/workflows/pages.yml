@@ -20,6 +20,7 @@ jobs:
       - run: npm ci          # asentaa riippuvuudet
       - run: npm run build   # oletus: vite build → dist/
       - uses: actions/upload-pages-artifact@v3
-        with:
-          path: dist
+  with:
+    path: dist/public      # ← dist  →  dist/public
+
       - uses: actions/deploy-pages@v4
