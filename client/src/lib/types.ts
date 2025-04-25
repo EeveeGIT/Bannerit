@@ -27,7 +27,7 @@ export interface BannerSettings {
   ctaBackgroundColor: string;
   ctaTextColor: string;
   ctaUrl: string;
-  logoPath?: string;
+  logoPath: string;
   logoPosition: "top-left" | "top-right" | "top-center" | "bottom-left" | "bottom-right" | "bottom-center" | "center";
   logoSize: number; // Size in pixels
   logoMargin: number; // Margin in pixels
@@ -39,3 +39,4 @@ export interface BannerSettings {
   utmCampaign: string;
   buttonBorderRadius: number; // For CTA button rounded corners
 }
+export type PartialBannerSettings = Partial<BannerSettings>;
