@@ -6,6 +6,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Skeleton } from "@/components/ui/skeleton";
 import { useToast } from "@/hooks/use-toast";
 import ColorPicker from "./ColorPicker";
+import LogoUploader from "@components/LogoUploader";  
 
 // Animation backgrounds
 const ANIMATIONS = [
@@ -40,7 +41,6 @@ interface DesignTabProps {
 }
 
 export default function DesignTab({ settings, onSettingsChange }: DesignTabProps) {
-  const [uploadingLogo, setUploadingLogo] = useState(false);
   const [uploadingBackground, setUploadingBackground] = useState(false);
   const [showColorPicker, setShowColorPicker] = useState(false);
   const [showAddBrandColorPicker, setShowAddBrandColorPicker] = useState(false);
@@ -91,43 +91,7 @@ export default function DesignTab({ settings, onSettingsChange }: DesignTabProps
     });
   };
 
-  const handleUploadLogo = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (!e.target.files || e.target.files.length === 0) return;
-    
-    const file = e.target.files[0];
-    const formData = new FormData();
-    formData.append("logo", file);
-    
-    setUploadingLogo(true);
-    
-    try {
-      const response = await fetch("/api/upload/logo", {
-        method: "POST",
-        body: formData,
-        credentials: "include",
-      });
-      
-      if (!response.ok) {
-        throw new Error("Failed to upload logo");
-      }
-      
-      const data = await response.json();
-      onSettingsChange({ logoPath: data.filePath });
-      toast({
-        title: "Logo uploaded",
-        description: "Your logo has been uploaded successfully.",
-      });
-    } catch (error) {
-      console.error("Error uploading logo:", error);
-      toast({
-        title: "Upload failed",
-        description: "Failed to upload logo. Please try again.",
-        variant: "destructive"
-      });
-    } finally {
-      setUploadingLogo(false);
-    }
-  };
+
 
   const handleUploadBackground = async (e: React.ChangeEvent<HTMLInputElement>) => {
     if (!e.target.files || e.target.files.length === 0) return;
@@ -381,41 +345,41 @@ export default function DesignTab({ settings, onSettingsChange }: DesignTabProps
       </div>
 
       {/* Logo */}
-      <div className="space-y-3">
-        <h3 className="font-medium text-neutral-900">Logo</h3>
-        <div className="flex space-x-3">
-          <label className="flex-1 flex justify-center items-center px-3 py-2 bg-white border border-neutral-300 rounded-md shadow-sm hover:bg-neutral-50 text-neutral-700 text-sm cursor-pointer">
-            <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-1" viewBox="0 0 20 20" fill="currentColor">
-              <path fillRule="evenodd" d="M4 5a2 2 0 00-2 2v8a2 2 0 002 2h12a2 2 0 002-2V7a2 2 0 00-2-2h-1.586a1 1 0 01-.707-.293l-1.121-1.121A2 2 0 0011.172 3H8.828a2 2 0 00-1.414.586L6.293 4.707A1 1 0 015.586 5H4zm6 9a3 3 0 100-6 3 3 0 000 6z" clipRule="evenodd" />
-            </svg>
-            {uploadingLogo ? "Uploading..." : "Upload Logo"}
-            <input 
-              type="file" 
-              className="hidden" 
-              accept="image/*" 
-              onChange={handleUploadLogo} 
-              disabled={uploadingLogo}
-            />
-          </label>
-          
-          <Select 
-            value={settings.logoPosition} 
-            onValueChange={(value) => onSettingsChange({ logoPosition: value as "top-left" | "top-right" | "top-center" | "bottom-left" | "bottom-right" | "bottom-center" | "center" })}
-          >
-            <SelectTrigger>
-              <SelectValue placeholder="Select logo position" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="top-left">Top Left</SelectItem>
-              <SelectItem value="top-center">Top Center</SelectItem>
-              <SelectItem value="top-right">Top Right</SelectItem>
-              <SelectItem value="center">Center</SelectItem>
-              <SelectItem value="bottom-left">Bottom Left</SelectItem>
-              <SelectItem value="bottom-center">Bottom Center</SelectItem>
-              <SelectItem value="bottom-right">Bottom Right</SelectItem>
-            </SelectContent>
-          </Select>
-        </div>
+<div className="flex space-x-3">
+  {/* ② uusi nappi – luo blob-url ja päivittää logoPath */}
+  <LogoUploader onLoad={(url) => onSettingsChange({ logoPath: url })} />
+
+  {/* ③ alkuperäinen logon sijainti-valitsin, pidä ennallaan */}
+  <Select
+    value={settings.logoPosition}
+    onValueChange={(value) =>
+      onSettingsChange({
+        logoPosition: value as
+          | "top-left"
+          | "top-right"
+          | "top-center"
+          | "bottom-left"
+          | "bottom-right"
+          | "bottom-center"
+          | "center",
+      })
+    }
+  >
+    <SelectTrigger>
+      <SelectValue placeholder="Select logo position" />
+    </SelectTrigger>
+    <SelectContent>
+      <SelectItem value="top-left">Top Left</SelectItem>
+      <SelectItem value="top-center">Top Center</SelectItem>
+      <SelectItem value="top-right">Top Right</SelectItem>
+      <SelectItem value="center">Center</SelectItem>
+      <SelectItem value="bottom-left">Bottom Left</SelectItem>
+      <SelectItem value="bottom-center">Bottom Center</SelectItem>
+      <SelectItem value="bottom-right">Bottom Right</SelectItem>
+    </SelectContent>
+  </Select>
+</div>
+
 
         {/* Logo Size */}
         <div className="space-y-2">
