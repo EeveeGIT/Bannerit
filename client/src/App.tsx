@@ -17,13 +17,16 @@ function Router() {
 
 function App() {
   return (
-    <QueryClientProvider client={queryClient}>
-      <TooltipProvider>
-        <Toaster />
-        <Router />
-      </TooltipProvider>
-    </QueryClientProvider>
+    <>
+      {/* debug-laatikon saa poistaa kun haluat */}
+
+
+      {/* <<< Renderöidään BannerCreator suoraan >>> */}
+      <BannerCreator />
+    </>
   );
 }
+
+
 
 export default App;

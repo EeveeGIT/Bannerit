@@ -12,33 +12,18 @@ export const animationKeyframes = `
 // Animation backgrounds with their properties
 export const animationBackgrounds = {
   "1": {
-    gradient: "linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab)",
-    duration: "15s"
-  },
-  "2": {
-    gradient: "linear-gradient(-45deg, #3B82F6, #6366F1, #8B5CF6, #A855F7)",
-    duration: "8s"
-  },
-  "3": {
-    gradient: "linear-gradient(-45deg, #10B981, #059669, #047857, #065F46)",
-    duration: "12s"
-  },
-  "4": {
-    gradient: "linear-gradient(-45deg, #F59E0B, #FBBF24, #F59E0B, #D97706)",
-    duration: "10s"
-  },
-  "5": {
-    gradient: "linear-gradient(-45deg, #111827, #1F2937, #374151, #4B5563)",
-    duration: "15s"
-  },
-  "6": {
-    gradient: "linear-gradient(-45deg, #6366F1, #4F46E5, #4338CA, #3730A3)",
-    duration: "12s"
-  },
-  "7": {
     gradient: "linear-gradient(-45deg, #ED2D26, #f4817d, #ED2D26)",
     duration: "10s"
-  }
+  },
+  "2": {
+    gradient: "linear-gradient(-45deg, #202020, #4b4b4b, #202020)",
+    duration: "10s"
+  },
+  "3": {
+    gradient: "linear-gradient(-45deg, #fff7ea, #e7dccb, #fff7ea)",
+    duration: "10s"
+  },
+
 };
 
 // Helper function to convert font weight strings to numeric values
@@ -77,48 +62,35 @@ export const getBannerStyle = (settings: BannerSettings): React.CSSProperties =>
 };
 
 // Get styles for logo positioning
-export const getLogoPositionStyle = (position: string, size: number = 64): React.CSSProperties => {
-  const style: React.CSSProperties = {
-    width: `${size}px`,
-    height: "auto"
-  };
-  
+export function getLogoPositionStyle(
+  position: BannerSettings["logoPosition"],
+  bannerWidth: number,
+  bannerHeight: number
+): { top: number; left: number; transform?: string } {
   switch (position) {
     case "top-left":
-      style.top = "8px";
-      style.left = "8px";
-      break;
+      return { top: 0, left: 0 };
     case "top-center":
-      style.top = "8px";
-      style.left = "50%";
-      style.transform = "translateX(-50%)";
-      break;
+      return { top: 0, left: bannerWidth / 2, transform: "translateX(-50%)" };
     case "top-right":
-      style.top = "8px";
-      style.right = "8px";
-      break;
-    case "bottom-left":
-      style.bottom = "8px";
-      style.left = "8px";
-      break;
-    case "bottom-center":
-      style.bottom = "8px";
-      style.left = "50%";
-      style.transform = "translateX(-50%)";
-      break;
-    case "bottom-right":
-      style.bottom = "8px";
-      style.right = "8px";
-      break;
+      return { top: 0, left: bannerWidth };
     case "center":
-      style.top = "50%";
-      style.left = "50%";
-      style.transform = "translate(-50%, -50%)";
-      break;
+      return {
+        top: bannerHeight / 2,
+        left: bannerWidth / 2,
+        transform: "translate(-50%, -50%)",
+      };
+    case "bottom-left":
+      return { top: bannerHeight, left: 0 };
+    case "bottom-center":
+      return {
+        top: bannerHeight,
+        left: bannerWidth / 2,
+        transform: "translateX(-50%)",
+      };
+    case "bottom-right":
+      return { top: bannerHeight, left: bannerWidth };
     default:
-      style.top = "8px";
-      style.left = "8px";
+      return { top: 0, left: 0 };
   }
-  
-  return style;
-};
+}

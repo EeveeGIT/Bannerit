@@ -1,147 +1,180 @@
-import { forwardRef } from "react";
-import { BannerSettings } from "@/lib/types";
+import React, { forwardRef, useState, useEffect } from "react";
+export type TextAlign = "left" | "right" | "center" | "justify" | "start" | "end";
 import { getBannerStyle, getLogoPositionStyle, getFontWeight } from "@/lib/bannerUtils";
+import { BannerSettings } from "@/lib/types";
 
 interface BannerPreviewProps {
   settings: BannerSettings;
 }
 
-const BannerPreview = forwardRef<HTMLDivElement, BannerPreviewProps>((props, ref) => {
-  const { settings } = props;
+const BannerPreview = forwardRef<HTMLDivElement, BannerPreviewProps>(({ settings }, ref) => {
+  const {
+    headingOffsetX = 0,
+    headingOffsetY = 0,
+    subOffsetX = 0,
+    subOffsetY = 0,
+    ctaOffsetX = 0,
+    ctaOffsetY = 0,
+    logoOffsetX = 0,
+    logoOffsetY = 0,
+    footerOffsetX = 0,
+    footerOffsetY = 0,
+  } = settings;
+
   const bannerStyle = getBannerStyle(settings);
-  const logoStyle = getLogoPositionStyle(settings.logoPosition, settings.logoSize || 64);
-  
-  // Construct click URL with UTM parameters if they exist
-  const constructClickUrl = () => {
-    if (!settings.clickUrl) return '#';
-    
-    const url = new URL(settings.clickUrl.startsWith('http') ? settings.clickUrl : `https://${settings.clickUrl}`);
-    
-    if (settings.utmSource) url.searchParams.append('utm_source', settings.utmSource);
-    if (settings.utmMedium) url.searchParams.append('utm_medium', settings.utmMedium);
-    if (settings.utmCampaign) url.searchParams.append('utm_campaign', settings.utmCampaign);
-    
-    return url.toString();
+  const logoBaseStyle = getLogoPositionStyle(settings.logoPosition, settings.width, settings.height);
+
+  const logoStyle = {
+    ...logoBaseStyle,
+    transform: `${logoBaseStyle.transform ?? ""} translate(${logoOffsetX}px, ${logoOffsetY}px)`,
   };
-  
+
+  // Animaatiotekstin tila Headingille
+  const [animatedHeading, setAnimatedHeading] = useState(
+    settings.headingAnimationTexts?.[0] || settings.headingText || "Default Heading"
+  );
+
+  useEffect(() => {
+    if (settings.isHeadingAnimated && settings.headingAnimationTexts?.length > 0) {
+      let index = 0;
+      const interval = setInterval(() => {
+        setAnimatedHeading(settings.headingAnimationTexts[index] || settings.headingText || "Default Heading");
+        index = (index + 1) % settings.headingAnimationTexts.length;
+      }, 1200); // Vaihtoväli 1.2 sekuntia
+      return () => clearInterval(interval);
+    } else {
+      setAnimatedHeading(settings.headingText || "Default Heading"); // Palauta kiinteä teksti, jos animaatio ei ole käytössä
+    }
+  }, [settings.isHeadingAnimated, settings.headingAnimationTexts, settings.headingText]);
+
+  // Animaatiotekstin tila Subtextille
+  const [animatedSubText, setAnimatedSubText] = useState(
+    settings.subAnimationTexts?.[0] || settings.subText || "Default Subtext"
+  );
+
+  useEffect(() => {
+    const subAnimationTextsLength = settings.subAnimationTexts?.length ?? 0;
+    if (settings.isSubTextAnimated && subAnimationTextsLength > 0) {
+      let index = 0;
+      const interval = setInterval(() => {
+        setAnimatedSubText(settings.subAnimationTexts?.[index] || settings.subText || "Default Subtext");
+        index = (index + 1) % subAnimationTextsLength;
+      }, 1200); // Vaihtoväli 1.2 sekuntia
+      return () => clearInterval(interval);
+    } else {
+      setAnimatedSubText(settings.subText || "Default Subtext"); // Palauta kiinteä teksti, jos animaatio ei ole käytössä
+    }
+  }, [settings.isSubTextAnimated, settings.subAnimationTexts, settings.subText]);
+
   return (
     <div className="lg:w-1/2 h-[250px] lg:h-full p-4 bg-neutral-200 flex items-center justify-center overflow-auto">
       <div className="relative bg-white shadow-lg rounded-md p-4 overflow-hidden">
-        {/* Banner Preview */}
-        <div 
-          id="banner-preview" 
+        {/* Click Layer */}
+        {settings.ctaUrl && (
+          <a
+            href={settings.ctaUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="absolute inset-0 z-20"
+            style={{ textDecoration: "none" }}
+          />
+        )}
+
+        <div
+          id="banner-preview"
           ref={ref}
-          className={`relative ${settings.backgroundType === 'animation' ? `bg-animation-${settings.backgroundValue}` : ''} rounded overflow-hidden`} 
+          className={`relative ${
+            settings.backgroundType === "animation" ? `bg-animation-${settings.backgroundValue}` : ""
+          } rounded overflow-hidden`}
           style={{
-            width: `${settings.width}px`, 
+            width: `${settings.width}px`,
             height: `${settings.height}px`,
-            ...bannerStyle
+            ...bannerStyle,
           }}
         >
           {/* Logo */}
           {settings.logoPath && (
-            <img 
-              src={settings.logoPath} 
-              alt="Logo" 
-              className="absolute z-10 rounded" 
-              style={logoStyle}
+            <img
+              src={settings.logoPath}
+              alt="Logo"
+              className="absolute z-10 rounded"
+              style={{
+                ...logoStyle,
+                width: `${settings.logoSize || 100}px`,
+                height: `${settings.logoSize || 100}px`,
+              }}
             />
           )}
-          
-          {/* Banner Text */}
-          <div className="absolute inset-0 flex flex-col justify-center items-center text-white">
-            <h2 
-              className="font-heading text-center"
+
+          {/* Tekstisisältö */}
+          <div className="absolute inset-0 flex flex-col justify-center items-center">
+            {/* Heading */}
+            <h1
+              className="text-center"
               style={{
                 fontFamily: settings.headingFont,
-                fontSize: `${settings.headingSize}px`,
-                color: settings.headingColor,
-                textAlign: settings.headingAlign,
-                fontWeight: getFontWeight(settings.headingWeight)
+                fontSize: `${settings.headingSize || 24}px`,
+                fontWeight: getFontWeight(settings.headingWeight),
+                color: settings.headingColor || "#fff7ea",
+                textAlign: (settings.headingAlign as TextAlign) || "left",
+                transform: `translate(${headingOffsetX}px, ${headingOffsetY}px)`,
               }}
             >
-              {settings.headingText}
-            </h2>
-            <p 
-              className="mt-1"
-              style={{
-                fontFamily: settings.subTextFont,
-                fontSize: `${settings.subTextSize}px`,
-                color: settings.subTextColor,
-                fontWeight: getFontWeight(settings.subTextWeight)
-              }}
-            >
-              {settings.subText}
-            </p>
-            
-            {settings.footerPosition !== "bottom" && (
-              <p 
-                className="mt-1"
+              {settings.isHeadingAnimated ? animatedHeading : settings.headingText}
+            </h1>
+
+            {/* Subtext */}
+            {settings.subText && (
+              <p
+                className="text-center mt-2"
+                style={{
+                  fontFamily: settings.subTextFont,
+                  fontSize: `${settings.subTextSize || 16}px`,
+                  fontWeight: getFontWeight(settings.subTextWeight),
+                  color: settings.subTextColor || "#000",
+                  textAlign: (settings.subTextAlign as TextAlign) || "center",
+                  transform: `translate(${subOffsetX}px, ${subOffsetY}px)`,
+                }}
+              >
+                {settings.isSubTextAnimated ? animatedSubText : settings.subText}
+              </p>
+            )}
+
+            {/* Footer Text */}
+            {settings.footerText && (
+              <p
+                className="absolute bottom-4 text-center"
                 style={{
                   fontFamily: settings.footerTextFont,
-                  fontSize: `${settings.footerTextSize}px`,
-                  color: settings.footerTextColor,
-                  fontWeight: getFontWeight(settings.footerTextWeight)
+                  fontSize: `${settings.footerTextSize || 12}px`,
+                  fontWeight: getFontWeight(settings.footerTextWeight),
+                  color: settings.footerTextColor || "#000",
+                  textAlign: (settings.footerTextAlign as TextAlign) || "center",
+                  transform: `translate(${footerOffsetX}px, ${footerOffsetY}px)`,
                 }}
               >
                 {settings.footerText}
               </p>
             )}
-            
-            {settings.showCta && (
-              <a 
+
+            {/* CTA Button */}
+            {settings.ctaText && (
+              <a
                 href={settings.ctaUrl}
-                className="mt-3 px-4 py-1 rounded text-sm font-medium z-20"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="mt-4 px-4 py-2 rounded inline-block text-center"
                 style={{
-                  backgroundColor: settings.ctaBackgroundColor,
-                  color: settings.ctaTextColor,
-                  borderRadius: `${settings.buttonBorderRadius || 4}px`
+                  backgroundColor: settings.ctaBackgroundColor || "#000",
+                  color: settings.ctaTextColor || "#fff",
+                  transform: `translate(${ctaOffsetX}px, ${ctaOffsetY}px)`,
+                  textDecoration: "none",
                 }}
-                onClick={(e) => e.preventDefault()}
               >
                 {settings.ctaText}
               </a>
             )}
           </div>
-          
-          {/* Footer Text at Bottom */}
-          {settings.footerPosition === "bottom" && (
-            <div className="absolute bottom-2 left-0 right-0 text-center">
-              <p 
-                style={{
-                  fontFamily: settings.footerTextFont,
-                  fontSize: `${settings.footerTextSize}px`,
-                  color: settings.footerTextColor,
-                  fontWeight: getFontWeight(settings.footerTextWeight)
-                }}
-              >
-                {settings.footerText}
-              </p>
-            </div>
-          )}
-          
-          {/* Clickable Layer */}
-          {settings.isClickable && (
-            <a 
-              href={constructClickUrl()}
-              className="absolute inset-0 z-10 cursor-pointer"
-              target="_blank"
-              rel="noopener noreferrer"
-              onClick={(e) => e.preventDefault()}
-            >
-              <span className="sr-only">Click banner</span>
-            </a>
-          )}
-        </div>
-        
-        {/* Size Indicator */}
-        <div className="mt-2 text-xs text-neutral-500 text-center">
-          {settings.width} × {settings.height} px 
-          {settings.width === 728 && settings.height === 90 ? ' · Leaderboard Banner' : ''}
-          {settings.width === 300 && settings.height === 250 ? ' · Medium Rectangle' : ''}
-          {settings.width === 300 && settings.height === 600 ? ' · Half Page' : ''}
-          {settings.width === 320 && settings.height === 50 ? ' · Mobile Banner' : ''}
-          {settings.width === 160 && settings.height === 600 ? ' · Skyscraper' : ''}
         </div>
       </div>
     </div>
@@ -149,5 +182,4 @@ const BannerPreview = forwardRef<HTMLDivElement, BannerPreviewProps>((props, ref
 });
 
 BannerPreview.displayName = "BannerPreview";
-
 export default BannerPreview;
