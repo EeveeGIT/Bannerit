@@ -20,6 +20,7 @@ interface ContentTabProps {
     ctaBackgroundColor?: string;
     ctaTextColor?: string;
     ctaUrl?: string; // New property for CTA URL
+    ctaBorderRadius?: number; // New property for CTA button border radius
   };
   onSettingsChange: (newSettings: Partial<ContentTabProps["settings"]>) => void;
 }
@@ -238,16 +239,26 @@ export default function ContentTab({ settings, onSettingsChange }: ContentTabPro
           />
         </div>
 
-        {/* CTA URL */}
+        {/* CTA Border Radius */}
         <div className="space-y-3">
-          <h3 className="font-medium text-neutral-900">CTA URL</h3>
-          <input
-            type="text"
-            placeholder="Enter CTA URL"
-            value={settings.ctaUrl || ""}
-            onChange={(e) => onSettingsChange({ ctaUrl: e.target.value })}
-            className="w-full p-2 border border-neutral-300 rounded-md"
-          />
+          <h3 className="font-medium text-neutral-900">CTA Border Radius</h3>
+          <div className="space-y-2">
+            <label className="text-sm text-neutral-700">
+              Border Radius: {settings.ctaBorderRadius || 0}px
+            </label>
+            <input
+              type="range"
+              min="0"
+              max="50"
+              value={settings.ctaBorderRadius || 0} // Default to 0px if not set
+              onChange={(e) =>
+                onSettingsChange({
+                  ctaBorderRadius: Math.max(0, Math.min(50, parseInt(e.target.value, 10))),
+                })
+              }
+              className="w-full"
+            />
+          </div>
         </div>
       </div>
     </div>
