@@ -25,11 +25,12 @@ export interface BannerSettings {
   footerTextColor: string;
   footerTextWeight: string; 
   footerTextAlign?: "left" | "center" | "right";
-  footerPosition: string;
+  footerPosition: "top" | "bottom"; 
   showCta: boolean;
   ctaText: string;
   ctaBackgroundColor: string;
   ctaTextColor: string;
+  ctaBorderRadius?: number; // Lisää tämä ominaisuus
   ctaUrl?: string;
   logoPath: string;
   logoPosition: string;
@@ -85,7 +86,7 @@ const defaultSettings: BannerSettings = {
   footerTextSize: 12,
   footerTextColor: "#000000",
   footerTextWeight: "normal",
-  footerPosition: "default",
+  footerPosition: "bottom",
   footerTextAlign: "center",
   showCta: false,
   ctaText: "Click Me",

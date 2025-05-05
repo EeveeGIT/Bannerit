@@ -45,7 +45,7 @@ const DEFAULT_SETTINGS: BannerSettings = {
   footerTextSize: 10,
   footerTextColor: "#fff7ea",
   footerTextWeight: "normal",
-  footerPosition: "default",
+  footerPosition: "bottom",
 
   showCta: false,
   ctaText: "Learn More",

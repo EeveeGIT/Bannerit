@@ -59,6 +59,22 @@ export default function ContentTab({ settings, onSettingsChange }: ContentTabPro
           />
         </div>
       </div>
+      {/* Headline Color */}
+<div className="relative">
+  <h3 className="font-medium text-neutral-900">Headline color</h3>
+  <input
+    type="text"
+    placeholder="Headline Color"
+    value={settings.headingColor}
+    onChange={(e) => onSettingsChange({ headingColor: e.target.value })}
+    className="w-full p-2 border border-neutral-300 rounded-md"
+  />
+  <button
+    className="absolute right-2 top-1/2 transform -translate-y-1/2 w-6 h-6 rounded-full border border-neutral-300"
+    style={{ backgroundColor: settings.headingColor }}
+    onClick={() => setShowHeadingColorPicker(true)}
+  />
+</div>
 
       {/* Subtext */}
       <div className="space-y-3">
@@ -136,6 +152,7 @@ export default function ContentTab({ settings, onSettingsChange }: ContentTabPro
 
         {/* Subtext Color */}
         <div className="relative">
+        <h3 className="font-medium text-neutral-900">Subtext color</h3>
           <input
             type="text"
             placeholder="Subtext Color"
@@ -185,6 +202,7 @@ export default function ContentTab({ settings, onSettingsChange }: ContentTabPro
         </div>
 
         <div className="relative">
+        <h3 className="font-medium text-neutral-900">Footer text color</h3>
           <input
             type="text"
             placeholder="Footer Text Color"
@@ -202,7 +220,7 @@ export default function ContentTab({ settings, onSettingsChange }: ContentTabPro
 
       {/* CTA Button */}
       <div className="space-y-3">
-        <h3 className="font-medium text-neutral-900">CTA Button</h3>
+        <h3 className="font-medium text-neutral-900">CTA button</h3>
         <input
           type="text"
           placeholder="Your CTA text"
@@ -211,6 +229,7 @@ export default function ContentTab({ settings, onSettingsChange }: ContentTabPro
           className="w-full p-2 border border-neutral-300 rounded-md"
         />
         <div className="relative">
+        <h3 className="font-medium text-neutral-900">CTA button background color</h3>
           <input
             type="text"
             placeholder="CTA Background Color"
@@ -225,6 +244,7 @@ export default function ContentTab({ settings, onSettingsChange }: ContentTabPro
           />
         </div>
         <div className="relative">
+        <h3 className="font-medium text-neutral-900">CTA button text color</h3>
           <input
             type="text"
             placeholder="CTA Text Color"
@@ -239,9 +259,21 @@ export default function ContentTab({ settings, onSettingsChange }: ContentTabPro
           />
         </div>
 
+{/* CTA URL */}
+<div className="space-y-3">
+  <h3 className="font-medium text-neutral-900">CTA URL + clik layer</h3>
+  <input
+    type="text"
+    placeholder="Enter CTA URL"
+    value={settings.ctaUrl || ""}
+    onChange={(e) => onSettingsChange({ ctaUrl: e.target.value })}
+    className="w-full p-2 border border-neutral-300 rounded-md"
+  />
+</div>
+
         {/* CTA Border Radius */}
         <div className="space-y-3">
-          <h3 className="font-medium text-neutral-900">CTA Border Radius</h3>
+          <h3 className="font-medium text-neutral-900">CTA border radius</h3>
           <div className="space-y-2">
             <label className="text-sm text-neutral-700">
               Border Radius: {settings.ctaBorderRadius || 0}px

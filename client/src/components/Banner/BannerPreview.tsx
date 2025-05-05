@@ -167,6 +167,7 @@ const BannerPreview = forwardRef<HTMLDivElement, BannerPreviewProps>(({ settings
                 style={{
                   backgroundColor: settings.ctaBackgroundColor || "#000",
                   color: settings.ctaTextColor || "#fff",
+                  borderRadius: `${settings.ctaBorderRadius || 0}px`, // Lisätty kulmien pyöristys
                   transform: `translate(${ctaOffsetX}px, ${ctaOffsetY}px)`,
                   textDecoration: "none",
                 }}
