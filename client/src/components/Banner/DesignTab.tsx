@@ -30,58 +30,50 @@ const BANNER_SIZES = [
   { id: "custom", label: "Custom Size", width: 0, height: 0 },
 ];
 
-// Valmiit brändivärit
-const DEFAULT_BRAND_COLORS = [
-  "#ED2D26",
-  "#f4817d",
-  "#fff7ea",
-  "#202020",
-];
+// Brändivärit
+const DEFAULT_BRAND_COLORS = ["#ED2D26", "#f4817d", "#fff7ea", "#202020"];
 
 interface DesignTabProps {
   settings: BannerSettings;
   onSettingsChange: (s: Partial<BannerSettings>) => void;
 }
 
-export default function DesignTab({
-  settings,
-  onSettingsChange,
-}: DesignTabProps) {
+export default function DesignTab({ settings, onSettingsChange }: DesignTabProps) {
   const [uploadingBackground, setUploadingBackground] = useState(false);
   const { toast } = useToast();
 
-  // Banner size presets
   const [selectedSize, setSelectedSize] = useState(() => {
-    const m = BANNER_SIZES.find(
+    const match = BANNER_SIZES.find(
       (sz) => sz.width === settings.width && sz.height === settings.height
     );
-    return m ? m.id : "custom";
+    return match ? match.id : "custom";
   });
+
   const [customW, setCustomW] = useState(settings.width);
   const [customH, setCustomH] = useState(settings.height);
 
-  // Handlers
   const handleSizeChange = (id: string) => {
     setSelectedSize(id);
-    const p = BANNER_SIZES.find((sz) => sz.id === id);
-    if (p && id !== "custom") {
-      onSettingsChange({ width: p.width, height: p.height });
+    const preset = BANNER_SIZES.find((sz) => sz.id === id);
+    if (preset && id !== "custom") {
+      onSettingsChange({ width: preset.width, height: preset.height });
     }
   };
+
   const handleCustomSize = () => {
     if (customW > 0 && customH > 0) {
       onSettingsChange({ width: customW, height: customH });
     }
   };
+
   const handleBgType = (t: string) => {
     let val = settings.backgroundValue;
     if (t === "animation" && !/^\d+$/.test(val)) val = "1";
     if (t === "color" && !/^#/.test(val)) val = DEFAULT_BRAND_COLORS[0];
     onSettingsChange({ backgroundType: t as any, backgroundValue: val });
   };
-  const handleUploadBg = async (
-    e: React.ChangeEvent<HTMLInputElement>
-  ) => {
+
+  const handleUploadBg = async (e: React.ChangeEvent<HTMLInputElement>) => {
     if (!e.target.files?.[0]) return;
     const fd = new FormData();
     fd.append("background", e.target.files[0]);
@@ -94,14 +86,8 @@ export default function DesignTab({
       });
       if (!res.ok) throw new Error();
       const { filePath } = await res.json();
-      onSettingsChange({
-        backgroundType: "image",
-        backgroundValue: filePath,
-      });
-      toast({
-        title: "Background uploaded",
-        description: "Taustakuva on nyt ladattu.",
-      });
+      onSettingsChange({ backgroundType: "image", backgroundValue: filePath });
+      toast({ title: "Background uploaded", description: "Taustakuva on nyt ladattu." });
     } catch {
       toast({
         title: "Upload failed",
@@ -141,9 +127,7 @@ export default function DesignTab({
                 onBlur={handleCustomSize}
                 disabled={selectedSize !== "custom"}
               />
-              <span className="absolute right-3 top-1/2 -translate-y-1/2 text-xs text-neutral-400">
-                px
-              </span>
+              <span className="absolute right-3 top-1/2 -translate-y-1/2 text-xs text-neutral-400">px</span>
             </div>
             <div className="flex-1 relative">
               <Input
@@ -154,9 +138,7 @@ export default function DesignTab({
                 onBlur={handleCustomSize}
                 disabled={selectedSize !== "custom"}
               />
-              <span className="absolute right-3 top-1/2 -translate-y-1/2 text-xs text-neutral-400">
-                px
-              </span>
+              <span className="absolute right-3 top-1/2 -translate-y-1/2 text-xs text-neutral-400">px</span>
             </div>
           </div>
         </div>
@@ -166,13 +148,8 @@ export default function DesignTab({
       <div className="space-y-3">
         <h3 className="font-medium text-neutral-900">Background</h3>
         <div className="grid grid-cols-2 gap-3">
-          <Select
-            value={settings.backgroundType}
-            onValueChange={handleBgType}
-          >
-            <SelectTrigger>
-              <SelectValue placeholder="Type" />
-            </SelectTrigger>
+          <Select value={settings.backgroundType} onValueChange={handleBgType}>
+            <SelectTrigger><SelectValue placeholder="Type" /></SelectTrigger>
             <SelectContent>
               <SelectItem value="animation">Animated</SelectItem>
               <SelectItem value="color">Solid</SelectItem>
@@ -181,12 +158,7 @@ export default function DesignTab({
           </Select>
           <label className="w-full flex justify-center items-center px-3 py-2 bg-white border rounded-md cursor-pointer hover:bg-neutral-50">
             {uploadingBackground ? "Uploading…" : "Upload"}
-            <input
-              type="file"
-              accept="image/*"
-              className="hidden"
-              onChange={handleUploadBg}
-            />
+            <input type="file" accept="image/*" className="hidden" onChange={handleUploadBg} />
           </label>
         </div>
         {settings.backgroundType === "animation" && (
@@ -199,10 +171,7 @@ export default function DesignTab({
                     ? "ring-2 ring-primary"
                     : "hover:ring-2 hover:ring-primary focus:ring-2 focus:ring-primary"
                 }`}
-                style={{
-                  backgroundImage: a.gradient,
-                  backgroundSize: "400% 400%",
-                }}
+                style={{ backgroundImage: a.gradient, backgroundSize: "400% 400%" }}
                 onClick={() =>
                   onSettingsChange({
                     backgroundType: "animation",
@@ -237,64 +206,64 @@ export default function DesignTab({
         )}
       </div>
 
-      {/* Logo, Position, Size & Offsets */}
+      {/* Logo */}
       <div className="space-y-3">
         <h3 className="font-medium text-neutral-900">Logo</h3>
-        <LogoUploader
-          onLoad={(url) => onSettingsChange({ logoPath: url })}
-        />
+        <LogoUploader onLoad={(url) => onSettingsChange({ logoPath: url })} />
+
         <div className="space-y-2">
-        <h4 className="text-sm font-medium text-neutral-700">Logo (oletus ylhäällä keskellä)</h4>
+          <label className="text-sm font-medium text-neutral-700">Logo position</label>
+          <Select
+            value={settings.logoPosition}
+            onValueChange={(value) =>
+              onSettingsChange({ logoPosition: value as BannerSettings["logoPosition"] })
+            }
+          >
+            <SelectTrigger><SelectValue placeholder="Position" /></SelectTrigger>
+            <SelectContent>
+              <SelectItem value="top-left">Top Left</SelectItem>
+              <SelectItem value="top-center">Top Center</SelectItem>
+              <SelectItem value="top-right">Top Right</SelectItem>
+              <SelectItem value="center">Center</SelectItem>
+              <SelectItem value="bottom-left">Bottom Left</SelectItem>
+              <SelectItem value="bottom-center">Bottom Center</SelectItem>
+              <SelectItem value="bottom-right">Bottom Right</SelectItem>
+            </SelectContent>
+          </Select>
         </div>
 
-        {/* Logo Size */}
+        {/* Logo Size & Offsets */}
         <div className="space-y-2">
-          <label className="text-xs text-neutral-500">
-            Logo Size: {settings.logoSize}px
-          </label>
+          <label className="text-xs text-neutral-500">Logo Size: {settings.logoSize}px</label>
           <input
             type="range"
             min={32}
             max={128}
             step={4}
             value={settings.logoSize}
-            onChange={(e) =>
-              onSettingsChange({ logoSize: Number(e.target.value) })
-            }
+            onChange={(e) => onSettingsChange({ logoSize: Number(e.target.value) })}
             className="w-full"
           />
         </div>
-
-        {/* Logo X-offset */}
         <div className="space-y-2">
-          <label className="text-xs text-neutral-500">
-            X-offset: {settings.logoOffsetX}px
-          </label>
+          <label className="text-xs text-neutral-500">X-offset: {settings.logoOffsetX}px</label>
           <input
             type="range"
             min={-200}
             max={200}
             value={settings.logoOffsetX}
-            onChange={(e) =>
-              onSettingsChange({ logoOffsetX: Number(e.target.value) })
-            }
+            onChange={(e) => onSettingsChange({ logoOffsetX: Number(e.target.value) })}
             className="w-full"
           />
         </div>
-
-        {/* Logo Y-offset */}
         <div className="space-y-2">
-          <label className="text-xs text-neutral-500">
-            Y-offset: {settings.logoOffsetY}px
-          </label>
+          <label className="text-xs text-neutral-500">Y-offset: {settings.logoOffsetY}px</label>
           <input
             type="range"
             min={-200}
             max={200}
             value={settings.logoOffsetY}
-            onChange={(e) =>
-              onSettingsChange({ logoOffsetY: Number(e.target.value) })
-            }
+            onChange={(e) => onSettingsChange({ logoOffsetY: Number(e.target.value) })}
             className="w-full"
           />
         </div>

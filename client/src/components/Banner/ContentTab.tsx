@@ -10,7 +10,7 @@ interface ContentTabProps {
     headingColor?: string;
     subText?: string;
     isSubTextAnimated?: boolean;
-    subAnimationTexts?: string[];
+    subTextAnimationTexts?: string[];
     subTextColor?: string;
     subTextSize?: number;
     footerText?: string;
@@ -172,11 +172,12 @@ export default function ContentTab({ settings, onSettingsChange }: ContentTabPro
         {settings.isSubTextAnimated && (
           <textarea
             placeholder="Enter animation texts, separated by commas"
-            value={settings.subAnimationTexts?.join(", ") || ""}
+            value={settings.subTextAnimationTexts?.join(", ") || ""}
             onChange={(e) =>
               onSettingsChange({
-                subAnimationTexts: e.target.value.split(",").map((text) => text.trim()),
+                subTextAnimationTexts: e.target.value.split(",").map((text) => text.trim()),
               })
+              
             }
             rows={3}
             className="w-full p-2 border border-neutral-300 rounded-md"

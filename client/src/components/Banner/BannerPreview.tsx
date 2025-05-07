@@ -53,11 +53,11 @@ const BannerPreview = forwardRef<HTMLDivElement, BannerPreviewProps>(({ settings
   );
 
   useEffect(() => {
-    const subAnimationTextsLength = settings.subAnimationTexts?.length ?? 0;
+    const subAnimationTextsLength = settings.subTextAnimationTexts?.length ?? 0;
     if (settings.isSubTextAnimated && subAnimationTextsLength > 0) {
       let index = 0;
       const interval = setInterval(() => {
-        setAnimatedSubText(settings.subAnimationTexts?.[index] || settings.subText || "Default Subtext");
+        setAnimatedSubText(settings.subTextAnimationTexts?.[index] || settings.subText || "Default Subtext");
         index = (index + 1) % subAnimationTextsLength;
       }, 1200); // Vaihtoväli 1.2 sekuntia
       return () => clearInterval(interval);
@@ -70,15 +70,16 @@ const BannerPreview = forwardRef<HTMLDivElement, BannerPreviewProps>(({ settings
     <div className="lg:w-1/2 h-[250px] lg:h-full p-4 bg-neutral-200 flex items-center justify-center overflow-auto">
       <div className="relative bg-white shadow-lg rounded-md p-4 overflow-hidden">
         {/* Click Layer */}
-        {settings.ctaUrl && (
-          <a
-            href={settings.ctaUrl}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="absolute inset-0 z-20"
-            style={{ textDecoration: "none" }}
-          />
-        )}
+        {settings.clickUrl && (
+  <a
+    href={settings.clickUrl.startsWith("http") ? settings.clickUrl : `https://${settings.clickUrl}`}
+    target="_blank"
+    rel="noopener noreferrer"
+    className="absolute inset-0 z-20"
+    style={{ textDecoration: "none" }}
+  />
+)}
+
 
         <div
           id="banner-preview"

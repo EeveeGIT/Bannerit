@@ -172,9 +172,10 @@ export default function BannerCreator() {
               {activeTab === "content" && (
                 <ContentTab settings={bannerSettings} onSettingsChange={onSettingsChange} />
               )}
-              {activeTab === "code" && (
-                <CodeTab htmlCode={htmlCode} settings={bannerSettings} />
-              )}
+{activeTab === "code" && (
+  <CodeTab htmlCode={htmlCode} settings={bannerSettings} />
+)}
+
             </div>
           </section>
         </div>
