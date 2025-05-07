@@ -1,123 +1,163 @@
 export interface BannerSettings {
+  // Bannerin koko
   width: number;
   height: number;
-  backgroundType: string;
+
+  // Taustat
+  backgroundType: "color" | "image" | "animation";
   backgroundValue: string;
-  backgroundSize: string;
-  backgroundPosition: string;
+  backgroundSize: "cover" | "contain" | "auto";
+  backgroundPosition: 
+    | "center"
+    | "top"
+    | "bottom"
+    | "left"
+    | "right"
+    | "top-left"
+    | "top-right"
+    | "bottom-left"
+    | "bottom-right";
+
+  // Otsikko
   headingText: string;
   headingFont: string;
   headingSize: number;
   headingColor: string;
   headingAlign: "left" | "center" | "right";
-  headingWeight: string;
+  headingWeight: "normal" | "medium" | "semibold" | "bold" | "extrabold";
+  headingOffsetX: number;
+  headingOffsetY: number;
+  headingMarginTop: number;    // px
+  headingMarginBottom: number; // px
+  isHeadingAnimated: boolean;
+  headingAnimationTexts: string[];
+
+  // Alaotsikko
   subText: string;
   subTextFont: string;
   subTextSize: number;
   subTextColor: string;
-  subTextWeight: string;
+  subTextWeight: "normal" | "medium" | "semibold" | "bold";
   subTextAlign: "left" | "center" | "right";
-  isSubTextAnimated?: boolean;
-  subAnimationTexts?: string[];
-  footerText: string;
-  footerTextFont: string;
-  footerTextSize: number;
-  footerTextColor: string;
-  footerTextWeight: string; 
-  footerTextAlign?: "left" | "center" | "right";
-  footerPosition: "top" | "bottom"; 
+  subOffsetX: number;
+  subOffsetY: number;
+  subtextMarginBottom: number; // px
+  isSubTextAnimated: boolean;
+  subTextAnimationTexts: string[];
+
+  // CTA-nappi
   showCta: boolean;
   ctaText: string;
   ctaBackgroundColor: string;
   ctaTextColor: string;
-  ctaBorderRadius?: number; // Lisää tämä ominaisuus
-  ctaUrl?: string;
+  buttonBorderRadius: number;
+  ctaUrl: string;
+  ctaOffsetX: number;
+  ctaOffsetY: number;
+  ctaBorderRadius?: number; // Optional property for CTA button border radius
+
+
+  // Logo
   logoPath: string;
-  logoPosition: string;
+  logoPosition: 
+    | "top-left"
+    | "top-center"
+    | "top-right"
+    | "center"
+    | "bottom-left"
+    | "bottom-center"
+    | "bottom-right";
   logoSize: number;
-  logoMargin: number;
-  brandColors: string[];
+  logoOffsetX: number;
+  logoOffsetY: number;
+
+  // Footer
+  footerText: string;
+  footerTextFont: string;
+  footerTextSize: number;
+  footerTextColor: string;
+  footerTextWeight: "normal" | "medium" | "semibold" | "bold";
+  footerTextAlign: "left" | "center" | "right";
+  footerPosition: "top" | "bottom";
+  footerOffsetX: number;
+  footerOffsetY: number;
+
+  // Click & Analytics
   isClickable: boolean;
   clickUrl: string;
   utmSource: string;
   utmMedium: string;
   utmCampaign: string;
-  buttonBorderRadius: number;
-  buttonOffsetX: number;
-  buttonOffsetY: number;
-  headingOffsetX: number;
-  headingOffsetY: number;
-  subOffsetX: number;
-  subOffsetY: number;
-  ctaOffsetX: number;
-  ctaOffsetY: number;
-  logoOffsetX: number;
-  logoOffsetY: number;
-  footerOffsetX: number;
-  footerOffsetY: number;
-  headingAnimationTexts: string[];
-  subTextAnimationTexts: string[];
-  isHeadingAnimated: boolean;
+
+  // Brändivärit
+  brandColors: string[];
 }
 
-const defaultSettings: BannerSettings = {
+// Oletusasetukset
+export const defaultSettings: BannerSettings = {
   width: 300,
   height: 600,
-  backgroundType: "color",
-  backgroundValue: "#ffffff",
+
+  backgroundType: "animation",
+  backgroundValue: "1",
   backgroundSize: "cover",
   backgroundPosition: "center",
+
   headingText: "Default Heading",
-  headingFont: "Arial",
+  headingFont: "Poppins",
   headingSize: 24,
-  headingColor: "#000000",
+  headingColor: "#fff7ea",
   headingAlign: "center",
   headingWeight: "bold",
+  headingOffsetX: 0,
+  headingOffsetY: 0,
+  headingMarginTop: 50,
+  headingMarginBottom: 5,
+  isHeadingAnimated: false,
+  headingAnimationTexts: [],
+
   subText: "Default Subtext",
-  subTextFont: "Arial",
-  subTextSize: 16,
-  subTextColor: "#000000",
-  subTextWeight: "normal",
+  subTextFont: "Poppins",
+  subTextSize: 14,
+  subTextColor: "#fff7ea",
+  subTextWeight: "medium",
   subTextAlign: "center",
+  subOffsetX: 0,
+  subOffsetY: 0,
+  subtextMarginBottom: 10,
   isSubTextAnimated: false,
-  subAnimationTexts: [],
-  footerText: "Default Footer",
-  footerTextFont: "Arial",
-  footerTextSize: 12,
-  footerTextColor: "#000000",
-  footerTextWeight: "normal",
-  footerPosition: "bottom",
-  footerTextAlign: "center",
+  subTextAnimationTexts: [],
+
   showCta: false,
   ctaText: "Click Me",
-  ctaBackgroundColor: "#007bff",
-  ctaTextColor: "#ffffff",
+  ctaBackgroundColor: "#fff7ea",
+  ctaTextColor: "#202020",
+  buttonBorderRadius: 4,
   ctaUrl: "",
+  ctaOffsetX: 0,
+  ctaOffsetY: 0,
+
   logoPath: "",
   logoPosition: "top-center",
   logoSize: 64,
-  logoMargin: 0,
-  brandColors: ["#ff0000", "#000000", "#f5f5f5"],
+  logoOffsetX: 0,
+  logoOffsetY: 0,
+
+  footerText: "Default Footer",
+  footerTextFont: "Poppins",
+  footerTextSize: 10,
+  footerTextColor: "#fff7ea",
+  footerTextWeight: "normal",
+  footerTextAlign: "center",
+  footerPosition: "bottom",
+  footerOffsetX: 0,
+  footerOffsetY: 0,
+
   isClickable: false,
   clickUrl: "",
   utmSource: "",
   utmMedium: "",
   utmCampaign: "",
-  buttonBorderRadius: 4,
-  headingOffsetX: 0,
-  headingOffsetY: 0,
-  subOffsetX: 0,
-  subOffsetY: 0,
-  ctaOffsetX: 0,
-  ctaOffsetY: 0,
-  logoOffsetX: 0,
-  logoOffsetY: 0,
-  footerOffsetX: 0,
-  footerOffsetY: 0,
-  headingAnimationTexts: ["Animated Heading 1", "Animated Heading 2"],
-  subTextAnimationTexts: ["Animated Subtext 1", "Animated Subtext 2"],
-  isHeadingAnimated: false,
-  
-  buttonOffsetX: 0,
-  buttonOffsetY: 0
+
+  brandColors: ["#ED2D26", "#f4817d", "#fff7ea", "#202020"],
 };

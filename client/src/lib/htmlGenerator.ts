@@ -3,146 +3,135 @@
 import { BannerSettings } from "./types";
 import { animationBackgrounds } from "./bannerUtils";
 
-// Simple font‐weight converter, same as before
+// Muuntaa font-weight‐tekstin numeroksi
 function getFontWeightValue(weight: string): number {
-  const map: Record<string, number> = {
-    normal: 400,
-    medium: 500,
-    semibold: 600,
-    bold: 700,
-    extrabold: 800,
-  };
-  return map[weight] ?? 400;
-}
-
-// Position helper (exactly like before)
-function getLogoPositionStyle(position: string): string {
-  switch (position) {
-    case "top-left":    return "top:8px; left:8px;";
-    case "top-center":  return "top:8px; left:50%; transform:translateX(-50%);";
-    case "top-right":   return "top:8px; right:8px;";
-    case "center":      return "top:50%; left:50%; transform:translate(-50%,-50%);";
-    case "bottom-left": return "bottom:8px; left:8px;";
-    case "bottom-center":return "bottom:8px; left:50%; transform:translateX(-50%);";
-    case "bottom-right":return "bottom:8px; right:8px;";
-    default:            return "top:8px; left:8px;";
+  switch (weight) {
+    case "normal": return 400;
+    case "medium": return 500;
+    case "semibold": return 600;
+    case "bold": return 700;
+    case "extrabold": return 800;
+    default: return 400;
   }
 }
 
-export function generateHtmlCode(settings: BannerSettings): string {
-  // pick animation (fallback to “1”)
-  const anim = animationBackgrounds[settings.backgroundValue as keyof typeof animationBackgrounds]
-             ?? animationBackgrounds["1"];
+export function generateHtmlCode(s: BannerSettings): string {
+  // Valitaan gradient‐animaatio
+  const key = s.backgroundValue as keyof typeof animationBackgrounds;
+  const anim = animationBackgrounds[key] || animationBackgrounds["1"];
 
-  // container inline styles
+  // Container‐tyylit (koko + sijainti)
   const containerStyle = [
-    `width:${settings.width}px`,
-    `height:${settings.height}px`,
+    `width:${s.width}px`,
+    `height:${s.height}px`,
     `position:relative`,
-    `overflow:hidden`,
-    // background...
-    settings.backgroundType === "color"
-      ? `background-color:${settings.backgroundValue}`
-      : settings.backgroundType === "image"
-        ? `background-image:url('${settings.backgroundValue}');background-size:${settings.backgroundSize};background-position:${settings.backgroundPosition}`
-        : `background-image:${anim.gradient};background-size:400% 400%;animation:gradient  ${anim.duration} ease infinite`,
+    `overflow:hidden`
+  ].join(';') + ';';
+
+  // Banner‐tyylit (tausta + flex‐layout)
+  const bannerStyle = [
+    `width:100%`,
+    `height:100%`,
+    s.backgroundType === "color"
+      ? `background-color:${s.backgroundValue}`
+      : s.backgroundType === "image"
+        ? `background-image:url('${s.backgroundValue}');background-size:${s.backgroundSize};background-position:${s.backgroundPosition}`
+        : `background-image:${anim.gradient};background-size:400% 400%;animation:gradient ${anim.duration} ease infinite`,
     `display:flex`,
     `flex-direction:column`,
     `justify-content:center`,
     `align-items:center`,
-    `text-align:center`
-  ].join(";");
+    `text-align:center`,
+    `position:relative`,
+    `overflow:hidden`
+  ].join(';') + ';';
 
-  // heading + subtext + footer weights
-  const hW = getFontWeightValue(settings.headingWeight);
-  const sW = getFontWeightValue(settings.subTextWeight);
-  const fW = getFontWeightValue(settings.footerTextWeight);
+  // Font‐painot
+  const hW = getFontWeightValue(s.headingWeight);
+  const subW = getFontWeightValue(s.subTextWeight);
+  const fW = getFontWeightValue(s.footerTextWeight);
 
-  // build the HTML (all inline)
   return `<!DOCTYPE html>
 <html lang="fi">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=${settings.width}, initial-scale=1">
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=${s.width}, initial-scale=1.0"/>
   <title>Banner Preview</title>
-  <link href="https://fonts.googleapis.com/css2?family=${settings.headingFont.replace(/ /g,"+")}:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=${s.headingFont.replace(/ /g,'+')}":wght@400;500;600;700;800&family=${s.subTextFont.replace(/ /g,'+')}:wght@400;500;600;700&display=swap" rel="stylesheet"/>
   <style>
-    @keyframes gradient {
-      0%   { background-position:0% 50%; }
-      50%  { background-position:100% 50%; }
-      100% { background-position:0% 50%; }
+    @keyframes gradient { 0%{background-position:0% 50%}50%{background-position:100% 50%}100%{background-position:0% 50%} }
+    body { margin:0; padding:0; display:flex; justify-content:center; align-items:center; background:#222; height:100vh; font-family:'Poppins',sans-serif; color:#fff7ea; }
+    .container { ${containerStyle} }
+    .banner    { ${bannerStyle} }
+    .main-text {
+      font-family:'${s.headingFont}',sans-serif;
+      font-size:${s.headingSize}px;
+      font-weight:${hW};
+      color:${s.headingColor};
+      text-align:${s.headingAlign};
+      margin:${s.headingMarginTop}px 0 ${s.headingMarginBottom}px;
+      transform:translate(${s.headingOffsetX}px,${s.headingOffsetY}px);
+      transition:opacity 0.4s ease-in-out;
+    }
+    .subtext {
+      font-family:'${s.subTextFont}',sans-serif;
+      font-size:${s.subTextSize}px;
+      font-weight:${subW};
+      color:${s.subTextColor};
+      text-align:${s.subTextAlign};
+      margin-bottom:${s.subtextMarginBottom}px;
+      transform:translate(${s.subOffsetX}px,${s.subOffsetY}px);
+    }
+    .cta-button {
+      display:inline-block;
+      background:${s.ctaBackgroundColor};
+      color:${s.ctaTextColor};
+      padding:6px 16px;
+      font-family:'${s.subTextFont}',sans-serif;
+      font-size:14px;
+      font-weight:500;
+      border-radius:${s.buttonBorderRadius}px;
+      text-decoration:none;
+      transform:translate(${s.ctaOffsetX}px,${s.ctaOffsetY}px);
+      cursor:pointer;
+      transition:transform 0.2s ease;
+    }
+    .footer-text {
+      font-family:'${s.footerTextFont}',sans-serif;
+      font-size:${s.footerTextSize}px;
+      font-weight:${fW};
+      color:${s.footerTextColor};
+      text-align:${s.footerTextAlign};
+      position:absolute;
+      ${s.footerPosition === 'bottom' ? `bottom:${s.footerOffsetY}px;` : `top:${s.footerOffsetY}px;`}
+      left:${s.footerOffsetX}px;
+      right:${s.footerOffsetX}px;
+      transform:translate(0,0);
     }
   </style>
 </head>
-<body style="margin:0;padding:0;display:flex;justify-content:center;align-items:center;background:#222;height:100vh;">
-  <div class="banner" style="${containerStyle}">
-    <!-- click‐layer -->
-    ${settings.isClickable && settings.clickUrl
-      ? `<a href="${
-          settings.clickUrl.startsWith("http")
-            ? settings.clickUrl
-            : `https://${settings.clickUrl}`
-        }" target="_blank" style="position:absolute;inset:0;z-index:1;text-decoration:none;"></a>`
-      : ``}
-
-    <!-- logo -->
-    ${settings.logoPath
-      ? `<img src="${settings.logoPath}" alt="Logo" style="position:absolute;${getLogoPositionStyle(settings.logoPosition)}width:${settings.logoSize}px;height:auto;z-index:2;">`
-      : ``}
-
-    <!-- heading -->
-    <h2 style="
-      margin:0;
-      font-family:'${settings.headingFont}',sans-serif;
-      font-size:${settings.headingSize}px;
-      font-weight:${hW};
-      color:${settings.headingColor};
-    ">${settings.headingText}</h2>
-
-    <!-- subtext -->
-    <p style="
-      margin:4px 0 0;
-      font-family:'${settings.subTextFont}',sans-serif;
-      font-size:${settings.subTextSize}px;
-      font-weight:${sW};
-      color:${settings.subTextColor};
-    ">${settings.subText}</p>
-
-    <!-- CTA -->
-    ${settings.showCta
-      ? `<a href="${settings.ctaUrl}" style="
-          display:inline-block;
-          margin:12px 0 0;
-          padding:6px 16px;
-          background-color:${settings.ctaBackgroundColor};
-          color:${settings.ctaTextColor};
-          text-decoration:none;
-          border-radius:${settings.buttonBorderRadius}px;
-          font-family:'${settings.subTextFont}',sans-serif;
-          font-size:14px;
-          font-weight:500;
-          z-index:2;
-        ">${settings.ctaText}</a>`
-      : ``}
-
-    <!-- footer -->
-    ${settings.footerText
-      ? `<div style="
-          position:absolute;
-          ${settings.footerPosition === "bottom"
-            ? `bottom:${settings.footerOffsetY}px`
-            : `top:${settings.footerOffsetY}px`};
-          left:${settings.footerOffsetX}px;
-          right:${settings.footerOffsetX}px;
-          font-family:'${settings.footerTextFont}',sans-serif;
-          font-size:${settings.footerTextSize}px;
-          font-weight:${fW};
-          color:${settings.footerTextColor};
-          text-align:center;
-          z-index:2;
-        ">${settings.footerText}</div>`
-      : ``}
+<body>
+  <div class="container">
+    <div class="banner">
+      ${s.isClickable && s.clickUrl
+        ? `<a href="${s.clickUrl.startsWith('http') ? s.clickUrl : `https://${s.clickUrl}`}" style="position:absolute;inset:0;z-index:1;cursor:pointer" target="_blank"></a>`
+        : ''}
+      ${s.logoPath
+        ? `<img src="${s.logoPath}" alt="Logo" style="position:absolute;top:${s.logoOffsetY}px;left:${s.logoOffsetX}px;width:${s.logoSize}px;height:auto;z-index:2;"/>`
+        : ''}
+      <div class="main-text">${s.headingText}</div>
+      <div class="subtext" id="cityText">${s.subText}</div>
+      ${s.showCta
+        ? `<a href="${s.ctaUrl}" class="cta-button" target="_blank">${s.ctaText}</a>`
+        : ''}
+      <div class="footer-text">${s.footerText}</div>
+    </div>
   </div>
+  <script>
+    const cities=['Helsinki','Espoo','Tampere','Oulu','Turku','Vantaa','Jyväskylä','Rovaniemi','Lahti','Kuopio'];
+    let idx=0,el=document.getElementById('cityText');
+    setInterval(()=>{el.style.opacity=0;setTimeout(()=>{idx=(idx+1)%cities.length;el.textContent=cities[idx];el.style.opacity=1;},500);},2000);
+  </script>
 </body>
 </html>`;
 }

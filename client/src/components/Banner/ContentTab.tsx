@@ -9,18 +9,18 @@ interface ContentTabProps {
     headingAlign?: "left" | "center" | "right";
     headingColor?: string;
     subText?: string;
-    isSubTextAnimated?: boolean; // New property for animated subtext
-    subAnimationTexts?: string[]; // New property for animated subtext
+    isSubTextAnimated?: boolean;
+    subAnimationTexts?: string[];
     subTextColor?: string;
-    subTextSize?: number; // New property for subtext size
+    subTextSize?: number;
     footerText?: string;
     footerTextColor?: string;
-    footerTextSize?: number; // New property for footer text size
+    footerTextSize?: number;
     ctaText?: string;
     ctaBackgroundColor?: string;
     ctaTextColor?: string;
-    ctaUrl?: string; // New property for CTA URL
-    ctaBorderRadius?: number; // New property for CTA button border radius
+    ctaUrl?: string;
+    ctaBorderRadius?: number;
   };
   onSettingsChange: (newSettings: Partial<ContentTabProps["settings"]>) => void;
 }
@@ -38,6 +38,62 @@ export default function ContentTab({ settings, onSettingsChange }: ContentTabPro
 
   return (
     <div role="tabpanel" className="space-y-6">
+
+      {/* --- Headline --- */}
+      <div className="space-y-3">
+        <h3 className="font-medium text-neutral-900">Headline</h3>
+
+        {/* Staattinen / Animoitu valinta */}
+        <div className="flex items-center space-x-4">
+          <label className="flex items-center space-x-1">
+            <input
+              type="radio"
+              name="headlineType"
+              checked={!settings.isHeadingAnimated}
+              onChange={() => onSettingsChange({ isHeadingAnimated: false })}
+            />
+            <span className="text-sm">Static</span>
+          </label>
+          <label className="flex items-center space-x-1">
+            <input
+              type="radio"
+              name="headlineType"
+              checked={!!settings.isHeadingAnimated}
+              onChange={() => onSettingsChange({ isHeadingAnimated: true })}
+            />
+            <span className="text-sm">Animated</span>
+          </label>
+        </div>
+
+        {/* Staattinen input */}
+        {!settings.isHeadingAnimated && (
+          <input
+            type="text"
+            placeholder="Enter headline"
+            value={settings.headingText}
+            onChange={(e) => onSettingsChange({ headingText: e.target.value })}
+            className="w-full p-2 border border-neutral-300 rounded-md"
+          />
+        )}
+
+        {/* Animoitu textarea */}
+        {settings.isHeadingAnimated && (
+          <textarea
+            placeholder="Enter animation texts, separated by commas"
+            value={settings.headingAnimationTexts?.join(", ") || ""}
+            onChange={(e) =>
+              onSettingsChange({
+                headingAnimationTexts: e.target.value
+                  .split(",")
+                  .map((t) => t.trim()),
+              })
+            }
+            rows={3}
+            className="w-full p-2 border border-neutral-300 rounded-md"
+          />
+        )}
+      </div>
+
       {/* Headline Size */}
       <div className="space-y-3">
         <h3 className="font-medium text-neutral-900">Headline Size</h3>
@@ -49,7 +105,7 @@ export default function ContentTab({ settings, onSettingsChange }: ContentTabPro
             type="range"
             min="10"
             max="100"
-            value={settings.headingSize || 24} // Default to 24px if not set
+            value={settings.headingSize || 24}
             onChange={(e) =>
               onSettingsChange({
                 headingSize: Math.max(10, Math.min(100, parseInt(e.target.value, 10))),
@@ -59,28 +115,27 @@ export default function ContentTab({ settings, onSettingsChange }: ContentTabPro
           />
         </div>
       </div>
+
       {/* Headline Color */}
-<div className="relative">
-  <h3 className="font-medium text-neutral-900">Headline color</h3>
-  <input
-    type="text"
-    placeholder="Headline Color"
-    value={settings.headingColor}
-    onChange={(e) => onSettingsChange({ headingColor: e.target.value })}
-    className="w-full p-2 border border-neutral-300 rounded-md"
-  />
-  <button
-    className="absolute right-2 top-1/2 transform -translate-y-1/2 w-6 h-6 rounded-full border border-neutral-300"
-    style={{ backgroundColor: settings.headingColor }}
-    onClick={() => setShowHeadingColorPicker(true)}
-  />
-</div>
+      <div className="relative">
+        <h3 className="font-medium text-neutral-900">Headline color</h3>
+        <input
+          type="text"
+          placeholder="Headline Color"
+          value={settings.headingColor}
+          onChange={(e) => onSettingsChange({ headingColor: e.target.value })}
+          className="w-full p-2 border border-neutral-300 rounded-md"
+        />
+        <button
+          className="absolute right-2 top-1/2 transform -translate-y-1/2 w-6 h-6 rounded-full border border-neutral-300"
+          style={{ backgroundColor: settings.headingColor }}
+          onClick={() => setShowHeadingColorPicker(true)}
+        />
+      </div>
 
       {/* Subtext */}
       <div className="space-y-3">
         <h3 className="font-medium text-neutral-900">Subtext</h3>
-
-        {/* Fixed or Animated Text */}
         <div className="flex items-center space-x-2">
           <label className="text-sm text-neutral-700">
             <input
@@ -95,7 +150,7 @@ export default function ContentTab({ settings, onSettingsChange }: ContentTabPro
             <input
               type="radio"
               name="subTextType"
-              checked={settings.isSubTextAnimated}
+              checked={!!settings.isSubTextAnimated}
               onChange={() => onSettingsChange({ isSubTextAnimated: true })}
             />
             Animated Text
@@ -139,7 +194,7 @@ export default function ContentTab({ settings, onSettingsChange }: ContentTabPro
               type="range"
               min="10"
               max="50"
-              value={settings.subTextSize || 16} // Default to 16px if not set
+              value={settings.subTextSize || 16}
               onChange={(e) =>
                 onSettingsChange({
                   subTextSize: Math.max(10, Math.min(50, parseInt(e.target.value, 10))),
@@ -152,7 +207,7 @@ export default function ContentTab({ settings, onSettingsChange }: ContentTabPro
 
         {/* Subtext Color */}
         <div className="relative">
-        <h3 className="font-medium text-neutral-900">Subtext color</h3>
+          <h3 className="font-medium text-neutral-900">Subtext color</h3>
           <input
             type="text"
             placeholder="Subtext Color"
@@ -190,7 +245,7 @@ export default function ContentTab({ settings, onSettingsChange }: ContentTabPro
               type="range"
               min="10"
               max="50"
-              value={settings.footerTextSize || 12} // Default to 12px if not set
+              value={settings.footerTextSize || 12}
               onChange={(e) =>
                 onSettingsChange({
                   footerTextSize: Math.max(10, Math.min(50, parseInt(e.target.value, 10))),
@@ -201,8 +256,9 @@ export default function ContentTab({ settings, onSettingsChange }: ContentTabPro
           </div>
         </div>
 
+        {/* Footer Color */}
         <div className="relative">
-        <h3 className="font-medium text-neutral-900">Footer text color</h3>
+          <h3 className="font-medium text-neutral-900">Footer text color</h3>
           <input
             type="text"
             placeholder="Footer Text Color"
@@ -229,7 +285,7 @@ export default function ContentTab({ settings, onSettingsChange }: ContentTabPro
           className="w-full p-2 border border-neutral-300 rounded-md"
         />
         <div className="relative">
-        <h3 className="font-medium text-neutral-900">CTA button background color</h3>
+          <h3 className="font-medium text-neutral-900">CTA button background color</h3>
           <input
             type="text"
             placeholder="CTA Background Color"
@@ -244,7 +300,7 @@ export default function ContentTab({ settings, onSettingsChange }: ContentTabPro
           />
         </div>
         <div className="relative">
-        <h3 className="font-medium text-neutral-900">CTA button text color</h3>
+          <h3 className="font-medium text-neutral-900">CTA button text color</h3>
           <input
             type="text"
             placeholder="CTA Text Color"
@@ -259,17 +315,17 @@ export default function ContentTab({ settings, onSettingsChange }: ContentTabPro
           />
         </div>
 
-{/* CTA URL */}
-<div className="space-y-3">
-  <h3 className="font-medium text-neutral-900">CTA URL + clik layer</h3>
-  <input
-    type="text"
-    placeholder="Enter CTA URL"
-    value={settings.ctaUrl || ""}
-    onChange={(e) => onSettingsChange({ ctaUrl: e.target.value })}
-    className="w-full p-2 border border-neutral-300 rounded-md"
-  />
-</div>
+        {/* CTA URL */}
+        <div className="space-y-3">
+          <h3 className="font-medium text-neutral-900">CTA URL + click layer</h3>
+          <input
+            type="text"
+            placeholder="Enter CTA URL"
+            value={settings.ctaUrl || ""}
+            onChange={(e) => onSettingsChange({ ctaUrl: e.target.value })}
+            className="w-full p-2 border border-neutral-300 rounded-md"
+          />
+        </div>
 
         {/* CTA Border Radius */}
         <div className="space-y-3">
@@ -282,7 +338,7 @@ export default function ContentTab({ settings, onSettingsChange }: ContentTabPro
               type="range"
               min="0"
               max="50"
-              value={settings.ctaBorderRadius || 0} // Default to 0px if not set
+              value={settings.ctaBorderRadius || 0}
               onChange={(e) =>
                 onSettingsChange({
                   ctaBorderRadius: Math.max(0, Math.min(50, parseInt(e.target.value, 10))),

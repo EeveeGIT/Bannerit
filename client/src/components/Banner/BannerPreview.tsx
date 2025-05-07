@@ -49,7 +49,7 @@ const BannerPreview = forwardRef<HTMLDivElement, BannerPreviewProps>(({ settings
 
   // Animaatiotekstin tila Subtextille
   const [animatedSubText, setAnimatedSubText] = useState(
-    settings.subAnimationTexts?.[0] || settings.subText || "Default Subtext"
+    settings.subTextAnimationTexts?.[0] || settings.subText || "Default Subtext"
   );
 
   useEffect(() => {
@@ -64,7 +64,7 @@ const BannerPreview = forwardRef<HTMLDivElement, BannerPreviewProps>(({ settings
     } else {
       setAnimatedSubText(settings.subText || "Default Subtext"); // Palauta kiinteä teksti, jos animaatio ei ole käytössä
     }
-  }, [settings.isSubTextAnimated, settings.subAnimationTexts, settings.subText]);
+  }, [settings.isSubTextAnimated, settings.subTextAnimationTexts, settings.subText]);
 
   return (
     <div className="lg:w-1/2 h-[250px] lg:h-full p-4 bg-neutral-200 flex items-center justify-center overflow-auto">
