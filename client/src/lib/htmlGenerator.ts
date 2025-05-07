@@ -29,6 +29,10 @@ export function generateHtmlCode(s: BannerSettings): string {
   const key = s.backgroundValue as keyof typeof animationBackgrounds;
   const anim = animationBackgrounds[key] || animationBackgrounds["1"];
 
+  const hW = getFontWeightValue(s.headingWeight);
+  const subW = getFontWeightValue(s.subTextWeight);
+  const fW = getFontWeightValue(s.footerTextWeight);
+
   const containerStyle = `width:${s.width}px;height:${s.height}px;position:relative;overflow:hidden;`;
   const bannerStyle = [
     "width:100%",
@@ -47,42 +51,42 @@ export function generateHtmlCode(s: BannerSettings): string {
     "overflow:hidden"
   ].join(';') + ';';
 
-  const hW = getFontWeightValue(s.headingWeight);
-  const subW = getFontWeightValue(s.subTextWeight);
-  const fW = getFontWeightValue(s.footerTextWeight);
-
-  // JS animaatiot: otsikko ja alaotsikko
-  const headingScript = s.isHeadingAnimated && s.headingAnimationTexts.length > 0 ? `
-    const headingTexts = ${JSON.stringify(s.headingAnimationTexts)};
-    let hIdx = 0;
-    const headingEl = document.getElementById('mainHeading');
-    setInterval(() => {
-      headingEl.style.opacity = 0;
-      setTimeout(() => {
-        hIdx = (hIdx + 1) % headingTexts.length;
-        headingEl.textContent = headingTexts[hIdx];
-        headingEl.style.opacity = 1;
-      }, 400);
-    }, 1500);
-  ` : "";
-
-  const subScript = s.isSubTextAnimated && s.subTextAnimationTexts.length > 0 ? `
-    const subTexts = ${JSON.stringify(s.subTextAnimationTexts)};
-    let sIdx = 0;
-    const subEl = document.getElementById('cityText');
-    setInterval(() => {
-      subEl.style.opacity = 0;
-      setTimeout(() => {
-        sIdx = (sIdx + 1) % subTexts.length;
-        subEl.textContent = subTexts[sIdx];
-        subEl.style.opacity = 1;
-      }, 400);
-    }, 1500);
-  ` : "";
-
-  const animationScript = `<script>${headingScript}${subScript}</script>`;
-
   const logoStyle = `${getLogoPositionStyle(s.logoPosition)} transform: translate(${s.logoOffsetX}px, ${s.logoOffsetY}px); width:${s.logoSize}px; height:auto; position:absolute; z-index:2;`;
+
+  // Skriptit
+  const headingAnimationScript = s.isHeadingAnimated && s.headingAnimationTexts?.length > 0 ? `
+    <script>
+      const headings = ${JSON.stringify(s.headingAnimationTexts)};
+      let hIndex = 0;
+      const headingEl = document.getElementById('headingText');
+      setInterval(() => {
+        headingEl.style.opacity = 0;
+        setTimeout(() => {
+          hIndex = (hIndex + 1) % headings.length;
+          headingEl.textContent = headings[hIndex];
+          headingEl.style.opacity = 1;
+        }, 500);
+      }, 1500);
+    </script>
+  ` : "";
+
+  const subTextAnimationScript = s.isSubTextAnimated && s.subTextAnimationTexts?.length > 0 ? `
+    <script>
+      const cities = ${JSON.stringify(s.subTextAnimationTexts)};
+      let index = 0;
+      const cityElement = document.getElementById('cityText');
+      setInterval(() => {
+        cityElement.style.opacity = 0;
+        setTimeout(() => {
+          index = (index + 1) % cities.length;
+          cityElement.textContent = cities[index];
+          cityElement.style.opacity = 1;
+        }, 500);
+      }, 1500);
+    </script>
+  ` : "";
+
+  const animationScript = headingAnimationScript + subTextAnimationScript;
 
   return `<!DOCTYPE html>
 <html lang="fi">
@@ -113,7 +117,7 @@ export function generateHtmlCode(s: BannerSettings): string {
       margin-top: ${s.headingMarginTop}px;
       color: ${s.headingColor};
       transform: translate(${s.headingOffsetX}px, ${s.headingOffsetY}px);
-      transition: opacity 0.4s ease;
+      transition: opacity 0.5s ease;
     }
     .subtext {
       font-size: ${s.subTextSize}px;
@@ -121,7 +125,7 @@ export function generateHtmlCode(s: BannerSettings): string {
       color: ${s.subTextColor};
       margin-bottom: ${s.subtextMarginBottom}px;
       transform: translate(${s.subOffsetX}px, ${s.subOffsetY}px);
-      transition: opacity 0.4s ease;
+      transition: opacity 0.5s ease;
     }
     .cta-button {
       background: linear-gradient(90deg, #FFF7EA, #F3ECD8, #FFF7EA);
@@ -133,10 +137,10 @@ export function generateHtmlCode(s: BannerSettings): string {
       border-radius: ${s.buttonBorderRadius}px;
       cursor: pointer;
       transition: background-position 0.5s ease, transform 0.2s ease, box-shadow 0.2s ease;
-      margin-bottom: 25px;
+      margin: 20px 0;
       text-decoration: none;
+      z-index: 10;
       position: relative;
-      z-index: 3;
     }
     .cta-button:hover {
       background-position: right center;
@@ -158,15 +162,15 @@ export function generateHtmlCode(s: BannerSettings): string {
 <body>
   <div class="container">
     <div class="banner">
-      <a href="${s.clickUrl || s.ctaUrl || '#'}" target="_blank" style="position:absolute; inset:0; z-index:1;"></a>
+      <a href="${s.clickUrl || s.ctaUrl || '#'}" target="_blank" style="position:absolute; inset:0; z-index:5;"></a>
 
       ${s.logoPath ? `<img src="${s.logoPath}" alt="Logo" style="${logoStyle}" />` : ""}
 
-      <div class="main-text" id="mainHeading">${s.isHeadingAnimated && s.headingAnimationTexts.length > 0 ? s.headingAnimationTexts[0] : s.headingText}</div>
+      <div class="main-text" id="headingText">${s.isHeadingAnimated && s.headingAnimationTexts?.length > 0 ? s.headingAnimationTexts[0] : s.headingText}</div>
 
-      <div class="subtext" id="cityText">${s.isSubTextAnimated && s.subTextAnimationTexts.length > 0 ? s.subTextAnimationTexts[0] : s.subText}</div>
+      <div class="subtext" id="cityText">${s.isSubTextAnimated && s.subTextAnimationTexts?.length > 0 ? s.subTextAnimationTexts[0] : s.subText}</div>
 
-      ${s.showCta && s.ctaText ? `<a href="${s.ctaUrl || '#'}" class="cta-button" target="_blank">${s.ctaText}</a>` : ""}
+      ${s.ctaText ? `<a href="${s.ctaUrl || '#'}" class="cta-button" target="_blank">${s.ctaText}</a>` : ""}
 
       <div class="footer-text">${s.footerText}</div>
     </div>
